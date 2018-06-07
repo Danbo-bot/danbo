@@ -1,0 +1,34 @@
+{
+  "name": "slowmode",
+  "version": "1.0.0",
+  "description": "discord implementation of slowmode",
+  "main": "slowmode.js",
+  "dependencies": {
+    "discord.js": "^11.3.2",
+    "pg": "^7.4.3",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.37.10"
+  },
+  "devDependencies": {
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.12.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dashwav/slowmode-js.git"
+  },
+  "keywords": [
+    "discord.js",
+    "bot",
+    "slowmode"
+  ],
+  "author": "dashwav",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dashwav/slowmode-js/issues"
+  },
+  "homepage": "https://github.com/dashwav/slowmode-js#readme"
+}
