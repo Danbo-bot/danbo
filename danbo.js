@@ -36,7 +36,7 @@ async function addExperience(user, amount) {
   }
   await Users.create({
     user_id: user.id,
-    user_name: user.name,
+    user_name: `${user.username}#${user.discriminator}`,
     user_avatar: user.avatarURL,
     experience: amount,
   });
