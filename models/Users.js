@@ -1,12 +1,15 @@
 module.exports = (sequelize, DataTypes) => sequelize.define('users', {
-  user_id: {
+  id: {
     type: DataTypes.STRING,
     primaryKey: true,
   },
-  user_name: {
+  name: {
     type: DataTypes.STRING,
   },
-  user_avatar: {
+  disc: {
+    type: DataTypes.STRING,
+  },
+  avatar_url: {
     type: DataTypes.STRING,
   },
   experience: {

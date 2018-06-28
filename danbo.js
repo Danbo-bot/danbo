@@ -28,6 +28,8 @@ async function addExperience(user, amount) {
     }
     await Users.upsert({
       user_id: dbUser.user_id,
+      user_name: user.username,
+      user_disc: user.discriminator,
       experience: dbUser.experience,
       level: dbUser.level,
     }).catch(console.error);
@@ -36,7 +38,8 @@ async function addExperience(user, amount) {
   }
   await Users.create({
     user_id: user.id,
-    user_name: `${user.username}#${user.discriminator}`,
+    user_name: user.username,
+    user_disc: user.discriminator,
     user_avatar: user.avatarURL,
     experience: amount,
   });
