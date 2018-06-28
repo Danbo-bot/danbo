@@ -5,6 +5,7 @@ module.exports = {
   description: 'Returns the reward ranks for a server, allows one to add more',
   usage: '<add/remove> <rolename: str> <levelGained: int>',
   async execute(message, args) {
+    if (!message.member.permissions.has('MANAGE_GUILD')) { return; }
     if (args.length === 0) {
       Rewards.findAll({
         where:
