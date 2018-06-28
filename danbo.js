@@ -27,9 +27,10 @@ async function addExperience(user, amount) {
       levelUp = true;
     }
     await Users.upsert({
-      user_id: dbUser.user_id,
-      user_name: user.username,
-      user_disc: user.discriminator,
+      id: dbUser.id,
+      name: user.username,
+      disc: user.discriminator,
+      avatar_url: user.avatarURL,
       experience: dbUser.experience,
       level: dbUser.level,
     }).catch(console.error);
@@ -37,10 +38,10 @@ async function addExperience(user, amount) {
     return levelUp;
   }
   await Users.create({
-    user_id: user.id,
-    user_name: user.username,
-    user_disc: user.discriminator,
-    user_avatar: user.avatarURL,
+    id: user.id,
+    name: user.username,
+    disc: user.discriminator,
+    avatar_url: user.avatarURL,
     experience: amount,
   });
   lastMinute.set(user.id, +new Date());
