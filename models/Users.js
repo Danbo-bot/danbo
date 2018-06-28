@@ -3,6 +3,9 @@ module.exports = (sequelize, DataTypes) => sequelize.define('users', {
     type: DataTypes.STRING,
     primaryKey: true,
   },
+  user_name: {
+    type: DataTypes.STRING,
+  },
   user_avatar: {
     type: DataTypes.STRING,
   },

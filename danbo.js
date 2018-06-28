@@ -16,7 +16,7 @@ setInterval(clearMap, 60000);
 const { Users, Rewards } = require('./dbObjects');
 
 async function addExperience(user, amount) {
-  // if (lastMinute.has(user.id)) return false;
+  if (lastMinute.has(user.id)) return false;
   const dbUser = await Users.findByPrimary(user.id).catch(console.error);
   let levelUp = false;
   if (dbUser) {
@@ -37,6 +37,7 @@ async function addExperience(user, amount) {
   }
   await Users.create({
     user_id: user.id,
+    user_name: user.name,
     user_avatar: user.avatarURL,
     experience: amount,
   });
