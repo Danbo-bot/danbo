@@ -75,7 +75,7 @@ const { prefix, token } = require('./config.json');
 
 commandFiles.forEach((file) => {
   const string = `./commands/${file}`;
-  const command = require(string);sss.
+  const command = require(string);
   // set a new item in the Collection
   // with the key as the command name and the value as the exported module
   client.commands.set(command.name, command);
