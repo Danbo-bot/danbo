@@ -1,7 +1,7 @@
 module.exports = {
-    name: 'ping',
-    description: 'Ping!',
-    execute(message, args, sequelize) {
-        message.channel.send(new Date().getTime() - message.createdTimestamp + " ms");
-    },
+  name: 'ping',
+  description: 'Ping!',
+  execute(message) {
+    message.channel.send(`${new Date().getTime() - message.createdTimestamp} ms`);
+  },
 };
