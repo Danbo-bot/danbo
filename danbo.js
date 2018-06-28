@@ -21,7 +21,6 @@ async function addExperience(user, amount) {
   let levelUp = false;
   if (dbUser) {
     dbUser.experience += Number(amount);
-    console.log(`${dbUser.experience} - ${dbUser.level}`);
     const currentLevel = Math.floor(Math.sqrt(dbUser.experience) / 9.5);
     if (currentLevel > dbUser.level) {
       dbUser.level = currentLevel;
