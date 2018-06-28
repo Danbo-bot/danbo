@@ -1,4 +1,9 @@
 {
     "prefix": "?!",
-    "token": "bottokengoeshere"
+    "token": "bottokengoeshere",
+    "dbCreds": {
+        "dbName": "database naem",
+        "dbUser": "user name",
+        "dbPass": "database password"
+    }
 }

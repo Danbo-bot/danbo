@@ -1,6 +1,8 @@
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize('marvindb', 'marvin', 'password', {
+const { dbCreds } = require('./config.json');
+
+const sequelize = new Sequelize(dbCreds.dbName, dbCreds.dbUser, dbCreds.dbPass, {
   host: 'localhost',
   dialect: 'postgres',
   logging: false,
