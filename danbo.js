@@ -13,11 +13,19 @@ function clearMap() {
 }
 setInterval(clearMap, 60000);
 
-const { Users, Rewards } = require('./dbObjects');
+const { Users, Rewards, Servers } = require('./dbObjects');
 
-async function addExperience(user, amount) {
-  if (lastMinute.has(user.id)) return false;
-  const dbUser = await Users.findByPrimary(user.id).catch(console.error);
+async function addExperience(user, guild, amount) {
+  if (lastMinute.exists(user.id, guild.id)) return false;
+  const dbUser = await Users.find({
+    where:
+    {
+      id: user.id,
+      server_id: guild.id,
+    },
+  }).catch(console.error);
+  const server = await Servers.findOrCreate({ where: { server_id: guild.id } });
+  if (!server) { return false; }
   let levelUp = false;
   if (dbUser) {
     dbUser.experience += Number(amount);
@@ -31,10 +39,11 @@ async function addExperience(user, amount) {
       name: user.username,
       disc: user.discriminator,
       avatar_url: user.avatarURL,
+      server_id: guild.id,
       experience: dbUser.experience,
       level: dbUser.level,
     }).catch(console.error);
-    lastMinute.set(user.id, +new Date());
+    lastMinute.set(user.id, guild.id);
     return levelUp;
   }
   await Users.create({
@@ -42,14 +51,22 @@ async function addExperience(user, amount) {
     name: user.username,
     disc: user.discriminator,
     avatar_url: user.avatarURL,
+    server_id: guild.id,
     experience: amount,
   });
-  lastMinute.set(user.id, +new Date());
+  lastMinute.set(user.id, guild.id);
   return false;
 }
 
 async function userOnLevel(message) {
-  const user = await Users.findById(message.author.id);
+  const user = await Users.find({
+    where:
+    {
+      user_id: message.author.id,
+      server_id: message.guild.id,
+    },
+  });
+  
   const allRewards = await Rewards.findAll({
     where: {
       server_id: message.guild.id,

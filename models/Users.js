@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => sequelize.define('users', {
   avatar_url: {
     type: DataTypes.STRING,
   },
+  server_id: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+  },
   experience: {
     type: DataTypes.INTEGER,
     defaultValue: 0,
