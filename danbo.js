@@ -110,7 +110,7 @@ function mathifyExp() { return Math.floor(Math.random() * (19 - 11)) + 11; }
 
 client.on('message', async (message) => {
   if (message.author.bot) return;
-  const levelUp = await addExperience(message.author, mathifyExp());
+  const levelUp = await addExperience(message.author, message.guild, mathifyExp());
   if (levelUp) {
     userOnLevel(message);
   }
