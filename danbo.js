@@ -18,7 +18,7 @@ setInterval(clearMap, 60000);
 const { Users, Rewards, Servers } = require('./dbObjects');
 
 async function addExperience(user, guild, amount) {
-  if (lastMinute.exists(user.id, guild.id)) return false;
+  if (lastMinute.has(user.id)) return false;
   const dbUser = await Users.find({
     where:
     {
