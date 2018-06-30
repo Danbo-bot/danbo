@@ -3,6 +3,8 @@ const Discord = require('discord.js');
 
 const client = new Discord.Client();
 
+process.env.FONTCONFIG_PATH = './assets/fonts';
+
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
