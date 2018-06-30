@@ -34,9 +34,9 @@ const applyText = (canvas, text) => {
 
   do {
     // Assign the font to the context and decrement it so it can be measured again
-    ctx.font = `${fontSize -= 4}px Roboto`;
+    ctx.font = `${fontSize -= 2}px Roboto`;
     // Compare pixel width of the text to the canvas minus the approximate avatar size
-  } while (ctx.measureText(text).width > 310);
+  } while (ctx.measureText(text).width > 360);
 
   // Return the result to use in the actual canvas
   return ctx.font;
@@ -50,7 +50,7 @@ module.exports = {
       'SELECT id, experience, level, rank() OVER(ORDER BY experience) FROM users WHERE id = ?',
       { raw: true, replacements: [message.author.id], type: sequelize.QueryTypes.SELECT },
     );
-    registerFont('../assets/fonts/Roboto-Thin.ttf', { family: 'Roboto' });
+    registerFont('./assets/fonts/Roboto-Medium.ttf', { family: 'Roboto' });
     const expSinceLevel = expSinceLastLevel(author.experience, author.level);
     const toNextLevel = expToNextLevel(author.experience, author.level);
     const canvas = Canvas.createCanvas(900, 250);
@@ -71,19 +71,17 @@ module.exports = {
     ctx.font = applyText(canvas, message.member.displayName);
     ctx.fillStyle = '#FFF';
     ctx.textBaseline = 'bottom';
-    ctx.fillText(message.member.displayName, 250, canvas.height - 124);
+    ctx.fillText(message.member.displayName, 250, canvas.height - 120);
     const nameText = ctx.measureText(message.member.displayName).width;
-
-    ctx.font = '28px Roboto';
     ctx.fillStyle = '#CECECE';
     ctx.textBaseline = 'bottom';
-    ctx.fillText(`#${message.author.discriminator}`, 250 + nameText + 2, canvas.height - 124);
+    ctx.fillText(`#${message.author.discriminator}`, 250 + nameText + 2, canvas.height - 120);
 
     ctx.font = '38px Roboto';
     ctx.fillStyle = '#FFF';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'bottom';
-    ctx.fillText(`Level ${author.level}`, canvas.width - 45, canvas.height - 124);
+    ctx.fillText(`Level ${author.level}`, canvas.width - 45, canvas.height - 120);
 
     ctx.font = '28px Roboto';
     ctx.fillStyle = '#CECECE';
