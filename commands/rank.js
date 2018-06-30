@@ -1,6 +1,7 @@
 const { sequelize } = require('../dbObjects');
 const Discord = require('discord.js');
 const Canvas = require('canvas');
+const { registerFont } = require('canvas');
 const snekfetch = require('snekfetch');
 
 function roundedImage(ctx, x, y, width, height, radius) {
@@ -49,6 +50,7 @@ module.exports = {
       'SELECT id, experience, level, rank() OVER(ORDER BY experience) FROM users WHERE id = ?',
       { raw: true, replacements: [message.author.id], type: sequelize.QueryTypes.SELECT },
     );
+    registerFont('../assets/fonts/Roboto-Thin.ttf', { family: 'Roboto' });
     const expSinceLevel = expSinceLastLevel(author.experience, author.level);
     const toNextLevel = expToNextLevel(author.experience, author.level);
     const canvas = Canvas.createCanvas(900, 250);
