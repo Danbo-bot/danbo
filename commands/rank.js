@@ -33,7 +33,7 @@ const applyText = (canvas, text) => {
 
   do {
     // Assign the font to the context and decrement it so it can be measured again
-    ctx.font = `${fontSize -= 4}px roboto`;
+    ctx.font = `${fontSize -= 4}px Roboto`;
     // Compare pixel width of the text to the canvas minus the approximate avatar size
   } while (ctx.measureText(text).width > 310);
 
@@ -72,31 +72,31 @@ module.exports = {
     ctx.fillText(message.member.displayName, 250, canvas.height - 124);
     const nameText = ctx.measureText(message.member.displayName).width;
 
-    ctx.font = '28px roboto';
+    ctx.font = '28px Roboto';
     ctx.fillStyle = '#CECECE';
     ctx.textBaseline = 'bottom';
     ctx.fillText(`#${message.author.discriminator}`, 250 + nameText + 2, canvas.height - 124);
 
-    ctx.font = '38px roboto';
+    ctx.font = '38px Roboto';
     ctx.fillStyle = '#FFF';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'bottom';
     ctx.fillText(`Level ${author.level}`, canvas.width - 45, canvas.height - 124);
 
-    ctx.font = '28px roboto';
+    ctx.font = '28px Roboto';
     ctx.fillStyle = '#CECECE';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'bottom';
     ctx.fillText(`Total EXP: ${author.experience}`, canvas.width - 45, canvas.height - 40);
 
-    ctx.font = '40px roboto';
+    ctx.font = '40px Roboto';
     ctx.fillStyle = '#337ab7';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'top';
     ctx.fillText(`#${author.rank}`, canvas.width - 35, 10);
     const rankText = ctx.measureText(`#${author.rank}`).width;
 
-    ctx.font = '40px roboto';
+    ctx.font = '40px Roboto';
     ctx.fillStyle = '#FFF';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'top';
@@ -128,7 +128,7 @@ module.exports = {
     ctx.fillRect(240, canvas.height - 114, percentage, 36);
     ctx.restore();
 
-    ctx.font = '28px roboto';
+    ctx.font = '28px Roboto';
     ctx.fillStyle = '#000';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
