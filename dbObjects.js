@@ -24,5 +24,5 @@ Servers.prototype.addItem = async function (role, triggerLevel) {
 };
 
 module.exports = {
-  Users, Servers, Rewards,
+  Users, Servers, Rewards, sequelize,
 };
