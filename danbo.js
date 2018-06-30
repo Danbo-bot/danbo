@@ -29,7 +29,7 @@ async function addExperience(user, guild, amount) {
   let levelUp = false;
   if (dbUser) {
     dbUser.experience += Number(amount);
-    const currentLevel = Math.floor(Math.sqrt(dbUser.experience) / 9.5);
+    const currentLevel = Math.floor(Math.sqrt(dbUser.experience) / 8.6);
     if (currentLevel > dbUser.level) {
       dbUser.level = currentLevel;
       levelUp = true;
@@ -62,7 +62,7 @@ async function userOnLevel(message) {
   const user = await Users.find({
     where:
     {
-      user_id: message.author.id,
+      id: message.author.id,
       server_id: message.guild.id,
     },
   });
