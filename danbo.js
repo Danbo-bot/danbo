@@ -19,12 +19,12 @@ const {
   Users, Rewards, Blacklisted, Servers,
 } = require('./dbObjects');
 
-
-
 async function addExperience(user, member, guild, amount) {
   if (lastMinute.has(user.id)) return false;
   const allBlacklisted = await Blacklisted.findAll({ where: { server_id: guild.id } });
-  if (member.roles.some(r => allBlacklisted.indexOf(r.role_id) >= 0)) { return false; }
+  const allRoles = allBlacklisted.map(role => role.role_id);
+  console.log(allRoles);
+  if (member.roles.some(r => allRoles.indexOf(r) >= 0)) { return false; }
   const dbUser = await Users.find({
     where:
     {
