@@ -47,7 +47,7 @@ module.exports = {
   description: 'Grabs rank for user',
   async execute(message) {
     const [author] = await sequelize.query(
-      'SELECT id, experience, level, rank() OVER(ORDER BY experience) FROM users WHERE id = ?',
+      'SELECT ranked.* FROM (SELECT id, experience, level, rank() OVER(ORDER BY experience) FROM users) as ranked WHERE id = ?',
       { raw: true, replacements: [message.author.id], type: sequelize.QueryTypes.SELECT },
     );
     registerFont('./assets/fonts/Roboto-Medium.ttf', { family: 'Roboto' });
