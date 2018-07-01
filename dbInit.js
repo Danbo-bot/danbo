@@ -12,6 +12,7 @@ const sequelize = new Sequelize(dbCreds.dbName, dbCreds.dbUser, dbCreds.dbPass, 
 sequelize.import('models/Users');
 sequelize.import('models/Rewards');
 sequelize.import('models/Servers');
+sequelize.import('models/Blacklist');
 
 const force = process.argv.includes('--force') || process.argv.includes('-f');
 
