@@ -19,7 +19,7 @@ module.exports = {
       });
     }
     if (args[0] === 'add') {
-      if (args.length < 3) {
+      if (args.length < 2) {
         message.channel.send('Not enough arguments');
         return;
       }
@@ -29,7 +29,6 @@ module.exports = {
         role_id: tempRole.id,
         role_name: tempRole.name,
         server_id: message.guild.id,
-        level_gained: args[2],
       }).then((newReward) => {
         const thisServer = Servers.findOrCreate({
           where: { server_id: message.guild.id },
