@@ -12,8 +12,10 @@ const sequelize = new Sequelize(dbCreds.dbName, dbCreds.dbUser, dbCreds.dbPass, 
 const Users = sequelize.import('models/Users');
 const Servers = sequelize.import('models/Servers');
 const Rewards = sequelize.import('models/Rewards');
+const Blacklisted = sequelize.import('models/Blacklist');
 
 Rewards.belongsTo(Servers, { foreignKey: 'server_id', as: 'server' });
+Blacklisted.belongsTo(Servers, { foreignKey: 'server_id', as: 'server' });
 
 Servers.prototype.addItem = async function (role, triggerLevel) {
   Rewards.upsert({
@@ -24,5 +26,5 @@ Servers.prototype.addItem = async function (role, triggerLevel) {
 };
 
 module.exports = {
-  Users, Servers, Rewards, sequelize,
+  Users, Servers, Rewards, Blacklisted, sequelize,
 };
