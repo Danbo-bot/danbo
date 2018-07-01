@@ -68,7 +68,7 @@ async function userOnLevel(message) {
       server_id: message.guild.id,
     },
   });
-  
+
   const allRewards = await Rewards.findAll({
     where: {
       server_id: message.guild.id,

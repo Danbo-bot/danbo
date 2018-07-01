@@ -58,12 +58,12 @@ module.exports = {
 
     ctx.fillStyle = '#000';
     ctx.save();
-    roundedImage(ctx, 0, 0, canvas.width, canvas.height, 20);
+    roundedImage(ctx, 0, 0, canvas.width, canvas.height, 10);
     ctx.clip();
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.restore();
 
-    ctx.fillStyle = 'rgba(169, 169, 169, .5)';
+    ctx.fillStyle = 'rgba(169, 169, 169, .2)';
     ctx.save();
     ctx.fillRect(0, 99, canvas.width, 115);
     ctx.restore();
@@ -71,8 +71,9 @@ module.exports = {
     ctx.font = applyText(canvas, message.member.displayName);
     ctx.fillStyle = '#FFF';
     ctx.textBaseline = 'bottom';
-    ctx.fillText(message.member.displayName, 250, 99);
+    ctx.fillText(message.member.displayName, 250, 104);
     const nameText = ctx.measureText(message.member.displayName).width;
+    ctx.font = '28px Roboto';
     ctx.fillStyle = '#CECECE';
     ctx.textBaseline = 'bottom';
     ctx.fillText(`#${message.author.discriminator}`, 250 + nameText + 2, 99);
@@ -113,7 +114,7 @@ module.exports = {
     ctx.restore();
 
     ctx.save();
-    ctx.fillStyle = '#f2f3f4';
+    ctx.fillStyle = '#595959';
     roundedImage(ctx, 240, canvas.height - 90, 620, 42, 14);
     ctx.clip();
     ctx.fillRect(240, canvas.height - 90, 620, 42);
