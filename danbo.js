@@ -92,10 +92,11 @@ async function userOnLevel(message) {
     let rewardThisRole = null;
     allRewards.forEach((role) => {
       const tempRole = message.guild.roles.find('id', role.role_id);
-      if (theMember.roles.has(tempRole.id)) {
+      if (role.level_gained === user.level) {
+        rewardThisRole = tempRole;
+      } else if (theMember.roles.has(tempRole.id)) {
         removeList.push(tempRole);
       }
-      if (role.level_gained === user.level) { rewardThisRole = tempRole; }
     });
     if (rewardThisRole) {
       theMember.addRole(rewardThisRole).then(() => {
