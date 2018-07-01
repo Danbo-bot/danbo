@@ -23,9 +23,13 @@ async function addExperience(user, member, guild, amount) {
   if (lastMinute.has(user.id)) return false;
   const allBlacklisted = await Blacklisted.findAll({ where: { server_id: guild.id } });
   const allRoles = allBlacklisted.map(role => role.role_id);
-  console.log(`${allRoles}\n${JSON.stringify(member.roles)}`);
-  const hasRole = member.roles.some(r => allRoles.indexOf(r) >= 0);
-  console.log(hasRole);
+  let hasRole = false;
+  for (let i = 0; i < member.roles.length && !hasRole; i += 1) {
+    for (let k = 0; k < allRoles.length && !hasRole; k += 1) {
+      console.log(`${member.roles[i]}${allRoles[k]}`);
+      if (member.roles[i] === allRoles[k]) { hasRole = true; }
+    }
+  }
   if (hasRole) { return false; }
   const dbUser = await Users.find({
     where:
