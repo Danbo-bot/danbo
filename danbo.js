@@ -24,7 +24,7 @@ async function addExperience(user, member, guild, amount) {
   const allBlacklisted = await Blacklisted.findAll({ where: { server_id: guild.id } });
   const allRoles = allBlacklisted.map(role => role.role_id);
   const hasRole = member.roles.some(r => allRoles.indexOf(r) >= 0);
-  console.log(allRoles);
+  console.log(hasRole);
   if (hasRole) { return false; }
   const dbUser = await Users.find({
     where:
