@@ -47,7 +47,7 @@ module.exports = {
   description: 'Grabs rank for user',
   async execute(message) {
     const [author] = await sequelize.query(
-      'SELECT ranked.* FROM (SELECT id, experience, level, rank() OVER(ORDER BY experience) FROM users WHERE server_id = :serverid) as ranked WHERE id = :id',
+      'SELECT ranked.* FROM (SELECT id, experience, level, rank() OVER(ORDER BY experience DESC) FROM users WHERE server_id = :serverid) as ranked WHERE id = :id',
       {
         raw: true,
         replacements: { serverid: message.guild.id, id: message.author.id },
