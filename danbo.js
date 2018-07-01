@@ -15,10 +15,16 @@ function clearMap() {
 }
 setInterval(clearMap, 60000);
 
-const { Users, Rewards, Servers } = require('./dbObjects');
+const {
+  Users, Rewards, Blacklisted, Servers,
+} = require('./dbObjects');
 
-async function addExperience(user, guild, amount) {
+async function addExperience(user, member, guild, amount) {
   if (lastMinute.has(user.id)) return false;
+  const allBlacklisted = await Blacklisted.findAll({ where: { server_id: guild.id } });
+  allBlacklisted.forEach((role) => {
+    if (member.roles.has(role.role_id)) return false;
+  });
   const dbUser = await Users.find({
     where:
     {
@@ -112,7 +118,7 @@ function mathifyExp() { return Math.floor(Math.random() * (19 - 11)) + 11; }
 
 client.on('message', async (message) => {
   if (message.author.bot) return;
-  const levelUp = await addExperience(message.author, message.guild, mathifyExp());
+  const levelUp = await addExperience(message.author, message.member, message.guild, mathifyExp());
   if (levelUp) {
     userOnLevel(message);
   }
