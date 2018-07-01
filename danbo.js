@@ -121,7 +121,7 @@ client.on('ready', () => {
   console.log('Ready!');
 });
 
-function mathifyExp() { return Math.floor(Math.random() * (27 - 11)) + 14; }
+function mathifyExp() { return Math.floor(Math.random() * (27 - 14)) + 14; }
 
 client.on('message', async (message) => {
   if (message.author.bot) return;
