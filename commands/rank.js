@@ -30,7 +30,7 @@ const applyText = (canvas, text) => {
   const ctx = canvas.getContext('2d');
 
   // Declare a base size of the font
-  let fontSize = 44;
+  let fontSize = 52;
 
   do {
     // Assign the font to the context and decrement it so it can be measured again
@@ -63,40 +63,39 @@ module.exports = {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.restore();
 
-    ctx.fillStyle = 'rgba(169, 169, 169, .2)';
+    ctx.fillStyle = 'rgba(169, 169, 169, .5)';
     ctx.save();
-    ctx.fillRect(220, 74, 660, 140);
+    ctx.fillRect(0, 99, canvas.width, 115);
     ctx.restore();
 
     ctx.font = applyText(canvas, message.member.displayName);
     ctx.fillStyle = '#FFF';
     ctx.textBaseline = 'bottom';
-    ctx.fillText(message.member.displayName, 250, canvas.height - 120);
+    ctx.fillText(message.member.displayName, 250, 99);
     const nameText = ctx.measureText(message.member.displayName).width;
     ctx.fillStyle = '#CECECE';
     ctx.textBaseline = 'bottom';
-    ctx.fillText(`#${message.author.discriminator}`, 250 + nameText + 2, canvas.height - 120);
+    ctx.fillText(`#${message.author.discriminator}`, 250 + nameText + 2, 99);
 
-    ctx.font = '38px Roboto';
+    ctx.font = '44px Roboto';
+    ctx.fillStyle = '#FFF';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(`Level ${author.level}`, 250, canvas.height - 90);
+
+    ctx.font = '28px Roboto';
     ctx.fillStyle = '#FFF';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'bottom';
-    ctx.fillText(`Level ${author.level}`, canvas.width - 45, canvas.height - 120);
+    ctx.fillText(`Total EXP: ${author.experience}`, canvas.width - 45, canvas.height - 90);
 
-    ctx.font = '28px Roboto';
-    ctx.fillStyle = '#CECECE';
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'bottom';
-    ctx.fillText(`Total EXP: ${author.experience}`, canvas.width - 45, canvas.height - 40);
-
-    ctx.font = '40px Roboto';
+    ctx.font = '44px Roboto';
     ctx.fillStyle = '#337ab7';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'top';
     ctx.fillText(`#${author.rank}`, canvas.width - 35, 10);
     const rankText = ctx.measureText(`#${author.rank}`).width;
 
-    ctx.font = '40px Roboto';
+    ctx.font = '44px Roboto';
     ctx.fillStyle = '#FFF';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'top';
@@ -104,35 +103,35 @@ module.exports = {
 
     // Set faux rounded corners
     ctx.save();
-    roundedImage(ctx, 30, 30, 190, 190, 10);
+    roundedImage(ctx, 30, 30, 195, 195, 10);
     ctx.clip();
 
     // Add avatar to image
     const { body: buffer } = await snekfetch.get(message.author.displayAvatarURL);
     const avatar = await Canvas.loadImage(buffer);
-    ctx.drawImage(avatar, 30, 30, 190, 190);
+    ctx.drawImage(avatar, 30, 30, 195, 195);
     ctx.restore();
 
     ctx.save();
     ctx.fillStyle = '#f2f3f4';
-    roundedImage(ctx, 240, canvas.height - 114, 620, 36, 12);
+    roundedImage(ctx, 240, canvas.height - 90, 620, 42, 14);
     ctx.clip();
-    ctx.fillRect(240, canvas.height - 114, 620, 36);
+    ctx.fillRect(240, canvas.height - 90, 620, 42);
     ctx.restore();
 
     ctx.save();
     ctx.fillStyle = '#337ab7';
     const percentage = 620 * (expSinceLevel / toNextLevel);
-    roundedImage(ctx, 240, canvas.height - 114, percentage, 36, 12);
+    roundedImage(ctx, 240, canvas.height - 90, percentage, 42, 14);
     ctx.clip();
-    ctx.fillRect(240, canvas.height - 114, percentage, 36);
+    ctx.fillRect(240, canvas.height - 90, percentage, 42);
     ctx.restore();
 
     ctx.font = '28px Roboto';
     ctx.fillStyle = '#000';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(`${expSinceLevel}/${toNextLevel}`, 550, canvas.height - 58 - 28 - 10);
+    ctx.fillText(`${expSinceLevel}/${toNextLevel}`, 550, canvas.height - 68);
 
     const attachment = new Discord.Attachment(canvas.toBuffer(), 'rank-card.png');
     if (author) {
