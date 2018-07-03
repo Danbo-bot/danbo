@@ -2,9 +2,11 @@ const { Servers } = require('../dbObjects');
 
 function StringReplace(inString, serverName, url) {
   if (inString.includes('%server_name%')) {
+    console.log('1');
     inString.replace(/%server_name%/g, `${serverName}`);
   }
   if (inString.includes('%url%')) {
+    console.log('2');
     inString.replace(/%url%/g, `${url}`);
   }
   return inString;
