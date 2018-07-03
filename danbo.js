@@ -38,7 +38,9 @@ async function addExperience(user, member, guild, amount) {
       server_id: guild.id,
     },
   }).catch(console.error);
-  const server = await Servers.findOrCreate({ where: { server_id: guild.id } });
+  const server = await Servers.findOrCreate({
+    where: { server_id: guild.id, server_name: guild.name },
+  });
   if (!server) { return false; }
   let levelUp = false;
   if (dbUser) {
