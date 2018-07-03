@@ -6,7 +6,7 @@ function StringReplace(inString, serverName, url) {
     retString = inString.replace(/%server_name%/g, `${serverName}`);
   }
   if (inString.includes('%url%')) {
-    retString.replace(/%url%/g, `${url}`);
+    retString = inString.replace(/%url%/g, `${url}`);
   }
   return retString;
 }
