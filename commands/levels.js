@@ -3,10 +3,10 @@ const { Servers } = require('../dbObjects');
 function StringReplace(inString, serverName, url) {
   let retString = inString;
   if (inString.includes('%server_name%')) {
-    retString = inString.replace(/%server_name%/g, `${serverName}`);
+    retString = retString.replace(/%server_name%/g, `${serverName}`);
   }
   if (inString.includes('%url%')) {
-    retString = inString.replace(/%url%/g, `${url}`);
+    retString = retString.replace(/%url%/g, `${url}`);
   }
   return retString;
 }
