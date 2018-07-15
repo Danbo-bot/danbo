@@ -20,7 +20,7 @@ const {
 } = require('./dbObjects');
 
 async function addExperience(user, member, guild, amount) {
-  if (lastMinute.has(user.id)) return false;
+  // if (lastMinute.has(user.id)) return false;
   const allBlacklisted = await Blacklisted.findAll({ where: { server_id: guild.id } });
   const memberRoles = member.roles.array();
   const allRoles = allBlacklisted.map(role => role.role_id);
@@ -74,37 +74,57 @@ async function addExperience(user, member, guild, amount) {
   return false;
 }
 
-async function userOnLevel(message) {
+async function userOnLevel(member, guild) {
   const user = await Users.find({
     where:
     {
-      id: message.author.id,
-      server_id: message.guild.id,
+      id: member.id,
+      server_id: guild.id,
+    },
+  });
+
+  if (!user) { return; }
+
+  const server = await Servers.find({
+    where:
+    {
+      server_id: guild.id,
     },
   });
 
   const allRewards = await Rewards.findAll({
     where: {
-      server_id: message.guild.id,
+      server_id: guild.id,
     },
   });
   if (allRewards) {
-    const theMember = message.member;
-    const removeList = [];
-    let rewardThisRole = null;
-    allRewards.forEach((role) => {
-      const tempRole = message.guild.roles.find('id', role.role_id);
-      if (role.level_gained === user.level) {
-        rewardThisRole = tempRole;
-      } else if (theMember.roles.has(tempRole.id)) {
-        removeList.push(tempRole);
+    const theMember = member;
+    if (server.remove_roles) {
+      const removeList = [];
+      let currentRole = null;
+      for (let j = 0; j < allRewards.length; j += 1) {
+        const tempRole = guild.roles.find('id', allRewards[j].role_id);
+
+        if (allRewards[j].level_gained <= user.level) {
+          if (!currentRole) { currentRole = allRewards[j]; }
+          if (allRewards[j].level_gained > currentRole.level_gained) {
+            if (theMember.roles.has(currentRole.id)) {
+              removeList.push(guild.roles.find('id', currentRole.role_id));
+            }
+            currentRole = allRewards[j];
+          } else if (theMember.roles.has(tempRole.id) && currentRole !== tempRole) {
+            removeList.push(tempRole);
+          }
+        } else if (theMember.roles.has(tempRole.id)) {
+          removeList.push(tempRole);
+        }
       }
-    });
-    if (rewardThisRole) {
-      theMember.addRole(rewardThisRole).then(() => {
-        if (removeList === undefined || removeList.length === 0) { return; }
-        theMember.removeRoles(removeList);
-      });
+      if (currentRole) {
+        currentRole = guild.roles.find('id', currentRole.role_id)
+        await theMember.addRole(currentRole);
+      }
+      if (removeList === undefined || removeList.length === 0) { return; }
+      await theMember.removeRoles(removeList);
     }
   }
 }
@@ -129,7 +149,7 @@ client.on('message', async (message) => {
   if (message.author.bot) return;
   const levelUp = await addExperience(message.author, message.member, message.guild, mathifyExp());
   if (levelUp) {
-    userOnLevel(message);
+    userOnLevel(message.member, message.guild);
   }
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
@@ -155,4 +175,7 @@ client.on('message', async (message) => {
   }
 });
 
+client.on('guildMemberAdd', async (member) => {
+  userOnLevel(member, member.guild);
+});
 client.login(token);

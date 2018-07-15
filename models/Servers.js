@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => sequelize.define('servers', {
   },
   remove_roles: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: true,
     allowNull: false,
   },
 }, {
