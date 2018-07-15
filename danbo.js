@@ -120,7 +120,7 @@ async function userOnLevel(member, guild) {
         }
       }
       if (currentRole) {
-        currentRole = guild.roles.find('id', currentRole.role_id)
+        currentRole = guild.roles.find('id', currentRole.role_id);
         await theMember.addRole(currentRole);
       }
       if (removeList === undefined || removeList.length === 0) { return; }
@@ -178,4 +178,5 @@ client.on('message', async (message) => {
 client.on('guildMemberAdd', async (member) => {
   userOnLevel(member, member.guild);
 });
+
 client.login(token);
