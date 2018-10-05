@@ -20,6 +20,10 @@ const {
 } = require('./dbObjects');
 
 async function addExperience(user, member, guild, amount) {
+  // If the user isn't blacklisted then add amount of xp to them
+  // this function also assigns their level based on their exp
+  // returns true if successful (and not blacklisted), false otherwise
+  
   // if (lastMinute.has(user.id)) return false;
   const allBlacklisted = await Blacklisted.findAll({ where: { server_id: guild.id } });
   const memberRoles = member.roles.array();
@@ -42,13 +46,11 @@ async function addExperience(user, member, guild, amount) {
     where: { server_id: guild.id, server_name: guild.name },
   });
   if (!server) { return false; }
-  let levelUp = false;
   if (dbUser) {
     dbUser.experience += Number(amount);
     const currentLevel = Math.floor(Math.sqrt(dbUser.experience) / 8.6);
     if (currentLevel > dbUser.level) {
       dbUser.level = currentLevel;
-      levelUp = true;
     }
     await Users.upsert({
       id: dbUser.id,
@@ -60,7 +62,7 @@ async function addExperience(user, member, guild, amount) {
       level: dbUser.level,
     }).catch(console.error);
     lastMinute.set(user.id, guild.id);
-    return levelUp;
+    return true;
   }
   await Users.create({
     id: user.id,
@@ -71,7 +73,7 @@ async function addExperience(user, member, guild, amount) {
     experience: amount,
   });
   lastMinute.set(user.id, guild.id);
-  return false;
+  return true;
 }
 
 async function userOnLevel(member, guild) {
@@ -149,8 +151,8 @@ function mathifyExp() { return Math.floor(Math.random() * (27 - 14)) + 14; }
 
 client.on('message', async (message) => {
   if (message.author.bot) return;
-  const levelUp = await addExperience(message.author, message.member, message.guild, mathifyExp());
-  if (levelUp) {
+  const success = await addExperience(message.author, message.member, message.guild, mathifyExp());
+  if (success) {
     userOnLevel(message.member, message.guild);
   }
   if (!message.content.startsWith(prefix) || message.author.bot) return;
