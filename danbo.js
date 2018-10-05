@@ -110,27 +110,28 @@ async function userOnLevel(member, guild) {
   // than their current role. Better for API
   if (allRewards && server.remove_roles) {
     const theMember = member;
-    const roles = await theMember.roles();
+    const roles = await theMember.roles.array();
     let currentRole = null; // Stores the reward role to apply
-    let storedRole = null; // stores current reward role of user
+    const storedRoles = []; // stores current reward role of user
     for (let j = 0; j < allRewards.length; j += 1) {
       const tempRole = guild.roles.find('id', allRewards[j].role_id);
       const index = roles.indexOf(tempRole.id);
       if (index > -1) {
-        storedRole = tempRole;
+        storedRoles.push(tempRole);
         roles.splice(index, 1);
       }
       if (allRewards[j].level_gained <= user.level) {
-        if (!currentRole) { 
+        if (!currentRole) {
           currentRole = tempRole;
         } else if (allRewards[j].level_gained > currentRole.level_gained) {
           currentRole = tempRole;
         }
       }
     }
-    if (storedRole !== currentRole) {
+    // If stored roles does not include Current role or if stored roles is greater than 1
+    if (!(storedRoles.includes(currentRole) && storedRoles.length === 1)) {
       if (currentRole && roles) {
-        roles.push(guild.roles.find('id', currentRole.role_id));
+        roles.push(guild.roles.find('id', currentRole.id));
         await theMember.setRoles(roles);
       }
     }
