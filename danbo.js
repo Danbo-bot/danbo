@@ -23,7 +23,7 @@ async function addExperience(user, member, guild, amount) {
   // If the user isn't blacklisted then add amount of xp to them
   // this function also assigns their level based on their exp
   // returns true if successful (and not blacklisted), false otherwise
-  
+
   // if (lastMinute.has(user.id)) return false;
   const allBlacklisted = await Blacklisted.findAll({ where: { server_id: guild.id } });
   const memberRoles = member.roles.array();
@@ -106,29 +106,33 @@ async function userOnLevel(member, guild) {
   // determine if the users level >= a reward level.
   // Store the highest level achieveable by user given their level
   // into currentRole. Finally add currentRole into the list of roles
-  // for the user and set them all at once. Better for API
+  // for the user and set them all at once IFF the new role is different
+  // than their current role. Better for API
   if (allRewards && server.remove_roles) {
     const theMember = member;
     var roles = await theMember.roles(); 
-    let currentRole = null; 
+    let currentRole = null; // Stores the reward role to apply
+    let storedRole  = null; // stores current reward role of user
     for (let j = 0; j < allRewards.length; j += 1) {
       const tempRole = guild.roles.find('id', allRewards[j].role_id);
       var index = roles.indexOf(tempRole.id); 
       if (index > -1) {
+        storedRole = tempRole
         roles.splice(index,1);
       }
       if (allRewards[j].level_gained <= user.level) {
-        if (!currentRole){ currentRole = tempRole; 
+        if (!currentRole){ 
+          currentRole = tempRole; 
         } else if (allRewards[j].level_gained > currentRole.level_gained) {
           currentRole = tempRole;
         }
       }
     }
-    if (currentRole) {
-      roles.push(guild.roles.find('id', currentRole.role_id));
-    }
-    if (roles) {
-      await theMember.setRoles(roles);
+    if (storedRole !== currentRole) {
+      if (currentRole && roles) {
+        roles.push(guild.roles.find('id', currentRole.role_id));
+        await theMember.setRoles(roles);
+      }
     }
   }
 }
