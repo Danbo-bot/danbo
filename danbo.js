@@ -115,7 +115,7 @@ async function userOnLevel(member, guild) {
     const storedRoles = []; // stores current reward role of user
     for (let j = 0; j < allRewards.length; j += 1) {
       const tempRole = guild.roles.find('id', allRewards[j].role_id);
-      const index = roles.indexOf(tempRole.id);
+      const index = roles.indexOf(tempRole);
       if (index > -1) {
         storedRoles.push(tempRole);
         roles.splice(index, 1);
