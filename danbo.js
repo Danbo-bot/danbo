@@ -97,34 +97,36 @@ async function userOnLevel(member, guild) {
       server_id: guild.id,
     },
   });
-  if (allRewards) {
-    const theMember = member;
-    if (server.remove_roles) {
-      const removeList = [];
-      let currentRole = null;
-      for (let j = 0; j < allRewards.length; j += 1) {
-        const tempRole = guild.roles.find('id', allRewards[j].role_id);
 
-        if (allRewards[j].level_gained <= user.level) {
-          if (!currentRole) { currentRole = allRewards[j]; }
-          if (allRewards[j].level_gained > currentRole.level_gained) {
-            if (theMember.roles.has(currentRole.id)) {
-              removeList.push(guild.roles.find('id', currentRole.role_id));
-            }
-            currentRole = allRewards[j];
-          } else if (theMember.roles.has(tempRole.id) && currentRole !== tempRole) {
-            removeList.push(tempRole);
-          }
-        } else if (theMember.roles.has(tempRole.id)) {
-          removeList.push(tempRole);
+  // To determine current reward level (assuming both rewards and
+  // bot role removal is enabled) make a list of all roles owned by
+  // user. First remove all reward roles from that array. Simultaneously
+  // determine if the users level >= a reward level.
+  // Store the highest level achieveable by user given their level
+  // into currentRole. Finally add currentRole into the list of roles
+  // for the user and set them all at once. Better for API
+  if (allRewards && server.remove_roles) {
+    const theMember = member;
+    var roles = await theMember.roles(); 
+    let currentRole = null; 
+    for (let j = 0; j < allRewards.length; j += 1) {
+      const tempRole = guild.roles.find('id', allRewards[j].role_id);
+      var index = roles.indexOf(tempRole.id); 
+      if (index > -1) {
+        roles.splice(index,1);
+      }
+      if (allRewards[j].level_gained <= user.level) {
+        if (!currentRole){ currentRole = tempRole; 
+        } else if (allRewards[j].level_gained > currentRole.level_gained) {
+          currentRole = tempRole;
         }
       }
-      if (currentRole) {
-        currentRole = guild.roles.find('id', currentRole.role_id);
-        await theMember.addRole(currentRole);
-      }
-      if (removeList === undefined || removeList.length === 0) { return; }
-      await theMember.removeRoles(removeList);
+    }
+    if (currentRole) {
+      roles.push(guild.roles.find('id', currentRole.role_id));
+    }
+    if (roles) {
+      await theMember.setRoles(roles);
     }
   }
 }
