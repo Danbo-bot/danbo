@@ -20,6 +20,10 @@ const {
 } = require('./dbObjects');
 
 async function addExperience(user, member, guild, amount) {
+  // If the user isn't blacklisted then add amount of xp to them
+  // this function also assigns their level based on their exp
+  // returns true if successful (and not blacklisted), false otherwise
+
   // if (lastMinute.has(user.id)) return false;
   const allBlacklisted = await Blacklisted.findAll({ where: { server_id: guild.id } });
   const memberRoles = member.roles.array();
@@ -42,13 +46,11 @@ async function addExperience(user, member, guild, amount) {
     where: { server_id: guild.id, server_name: guild.name },
   });
   if (!server) { return false; }
-  let levelUp = false;
   if (dbUser) {
     dbUser.experience += Number(amount);
     const currentLevel = Math.floor(Math.sqrt(dbUser.experience) / 8.6);
     if (currentLevel > dbUser.level) {
       dbUser.level = currentLevel;
-      levelUp = true;
     }
     await Users.upsert({
       id: dbUser.id,
@@ -60,7 +62,7 @@ async function addExperience(user, member, guild, amount) {
       level: dbUser.level,
     }).catch(console.error);
     lastMinute.set(user.id, guild.id);
-    return levelUp;
+    return true;
   }
   await Users.create({
     id: user.id,
@@ -71,7 +73,7 @@ async function addExperience(user, member, guild, amount) {
     experience: amount,
   });
   lastMinute.set(user.id, guild.id);
-  return false;
+  return true;
 }
 
 async function userOnLevel(member, guild) {
@@ -97,34 +99,41 @@ async function userOnLevel(member, guild) {
       server_id: guild.id,
     },
   });
-  if (allRewards) {
-    const theMember = member;
-    if (server.remove_roles) {
-      const removeList = [];
-      let currentRole = null;
-      for (let j = 0; j < allRewards.length; j += 1) {
-        const tempRole = guild.roles.find('id', allRewards[j].role_id);
 
-        if (allRewards[j].level_gained <= user.level) {
-          if (!currentRole) { currentRole = allRewards[j]; }
-          if (allRewards[j].level_gained > currentRole.level_gained) {
-            if (theMember.roles.has(currentRole.id)) {
-              removeList.push(guild.roles.find('id', currentRole.role_id));
-            }
-            currentRole = allRewards[j];
-          } else if (theMember.roles.has(tempRole.id) && currentRole !== tempRole) {
-            removeList.push(tempRole);
-          }
-        } else if (theMember.roles.has(tempRole.id)) {
-          removeList.push(tempRole);
+  // To determine current reward level (assuming both rewards and
+  // bot role removal is enabled) make a list of all roles owned by
+  // user. First remove all reward roles from that array. Simultaneously
+  // determine if the users level >= a reward level.
+  // Store the highest level achieveable by user given their level
+  // into currentRole. Finally add currentRole into the list of roles
+  // for the user and set them all at once IFF the new role is different
+  // than their current role. Better for API
+  if (allRewards && server.remove_roles) {
+    const theMember = member;
+    const roles = await theMember.roles.array();
+    let currentRole = null; // Stores the reward role to apply
+    const storedRoles = []; // stores current reward role of user
+    for (let j = 0; j < allRewards.length; j += 1) {
+      const tempRole = guild.roles.find('id', allRewards[j].role_id);
+      const index = roles.indexOf(tempRole);
+      if (index > -1) {
+        storedRoles.push(tempRole);
+        roles.splice(index, 1);
+      }
+      if (allRewards[j].level_gained <= user.level) {
+        if (!currentRole) {
+          currentRole = tempRole;
+        } else if (allRewards[j].level_gained > currentRole.level_gained) {
+          currentRole = tempRole;
         }
       }
-      if (currentRole) {
-        currentRole = guild.roles.find('id', currentRole.role_id);
-        await theMember.addRole(currentRole);
+    }
+    // If stored roles does not include Current role or if stored roles is greater than 1
+    if (!(storedRoles.includes(currentRole) && storedRoles.length === 1)) {
+      if (currentRole && roles) {
+        roles.push(guild.roles.find('id', currentRole.id));
+        await theMember.setRoles(roles);
       }
-      if (removeList === undefined || removeList.length === 0) { return; }
-      await theMember.removeRoles(removeList);
     }
   }
 }
@@ -147,8 +156,8 @@ function mathifyExp() { return Math.floor(Math.random() * (27 - 14)) + 14; }
 
 client.on('message', async (message) => {
   if (message.author.bot) return;
-  const levelUp = await addExperience(message.author, message.member, message.guild, mathifyExp());
-  if (levelUp) {
+  const success = await addExperience(message.author, message.member, message.guild, mathifyExp());
+  if (success) {
     userOnLevel(message.member, message.guild);
   }
   if (!message.content.startsWith(prefix) || message.author.bot) return;
