@@ -117,21 +117,24 @@ async function userOnLevel(member, guild) {
       const tempRole = guild.roles.find('id', allRewards[j].role_id);
       const index = roles.indexOf(tempRole);
       if (index > -1) {
-        storedRoles.push(tempRole);
+        storedRoles.push(allRewards[j]);
         roles.splice(index, 1);
       }
       if (allRewards[j].level_gained <= user.level) {
         if (!currentRole) {
-          currentRole = tempRole;
+          currentRole = allRewards[j];
         } else if (allRewards[j].level_gained > currentRole.level_gained) {
-          currentRole = tempRole;
+          currentRole = allRewards[j];
         }
       }
     }
     // If stored roles does not include Current role or if stored roles is greater than 1
     if (!(storedRoles.includes(currentRole) && storedRoles.length === 1)) {
       if (currentRole && roles) {
-        roles.push(guild.roles.find('id', currentRole.id));
+        roles.push(guild.roles.find('id', currentRole.role_id));
+        await theMember.setRoles(roles);
+      } else if (roles) {
+        // If there is not a current role, but roles were removed
         await theMember.setRoles(roles);
       }
     }
