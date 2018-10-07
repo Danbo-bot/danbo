@@ -1,6 +1,8 @@
 const fs = require('fs');
 const Discord = require('discord.js');
 
+const { dev } = require('./config.json');
+
 const client = new Discord.Client();
 
 process.env.FONTCONFIG_PATH = './assets/fonts';
@@ -24,7 +26,9 @@ async function addExperience(user, member, guild, amount) {
   // this function also assigns their level based on their exp
   // returns true if successful (and not blacklisted), false otherwise
 
-  // if (lastMinute.has(user.id)) return false;
+  if (!dev) {
+    if (lastMinute.has(user.id)) return false;
+  }
   const allBlacklisted = await Blacklisted.findAll({ where: { server_id: guild.id } });
   const memberRoles = member.roles.array();
   const allRoles = allBlacklisted.map(role => role.role_id);
@@ -117,21 +121,21 @@ async function userOnLevel(member, guild) {
       const tempRole = guild.roles.find('id', allRewards[j].role_id);
       const index = roles.indexOf(tempRole);
       if (index > -1) {
-        storedRoles.push(tempRole);
+        storedRoles.push(allRewards[j]);
         roles.splice(index, 1);
       }
       if (allRewards[j].level_gained <= user.level) {
         if (!currentRole) {
-          currentRole = tempRole;
+          currentRole = allRewards[j];
         } else if (allRewards[j].level_gained > currentRole.level_gained) {
-          currentRole = tempRole;
+          currentRole = allRewards[j];
         }
       }
     }
     // If stored roles does not include Current role or if stored roles is greater than 1
     if (!(storedRoles.includes(currentRole) && storedRoles.length === 1)) {
       if (currentRole && roles) {
-        roles.push(guild.roles.find('id', currentRole.id));
+        roles.push(guild.roles.find('id', currentRole.role_id));
         await theMember.setRoles(roles);
       }
     }

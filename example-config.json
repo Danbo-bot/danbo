@@ -1,6 +1,7 @@
 {
     "prefix": "?!",
     "token": "bottokengoeshere",
+    "dev": true,
     "dbCreds": {
         "dbName": "database naem",
         "dbUser": "user name",
