@@ -112,7 +112,7 @@ async function userOnLevel(member, guild) {
   // into currentRole. Finally add currentRole into the list of roles
   // for the user and set them all at once IFF the new role is different
   // than their current role. Better for API
-  if (allRewards && server.remove_roles) {
+  if (allRewards) {
     const theMember = member;
     const roles = await theMember.roles.array();
     let currentRole = null; // Stores the reward role to apply
@@ -122,7 +122,7 @@ async function userOnLevel(member, guild) {
       const index = roles.indexOf(tempRole);
       if (index > -1) {
         storedRoles.push(allRewards[j]);
-        roles.splice(index, 1);
+	if (server.remove_roles) { roles.splice(index, 1); }
       }
       if (allRewards[j].level_gained <= user.level) {
         if (!currentRole) {
