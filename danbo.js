@@ -137,9 +137,6 @@ async function userOnLevel(member, guild) {
       if (currentRole && roles) {
         roles.push(guild.roles.find('id', currentRole.role_id));
         await theMember.setRoles(roles);
-      } else if (roles) {
-        // If there is not a current role, but roles were removed
-        await theMember.setRoles(roles);
       }
     }
   }
