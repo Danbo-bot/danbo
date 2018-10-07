@@ -1,6 +1,8 @@
 const fs = require('fs');
 const Discord = require('discord.js');
 
+const { dev } = require('./config.json');
+
 const client = new Discord.Client();
 
 process.env.FONTCONFIG_PATH = './assets/fonts';
@@ -24,7 +26,9 @@ async function addExperience(user, member, guild, amount) {
   // this function also assigns their level based on their exp
   // returns true if successful (and not blacklisted), false otherwise
 
-  if (lastMinute.has(user.id)) return false;
+  if (!dev) {
+    if (lastMinute.has(user.id)) return false;
+  }
   const allBlacklisted = await Blacklisted.findAll({ where: { server_id: guild.id } });
   const memberRoles = member.roles.array();
   const allRoles = allBlacklisted.map(role => role.role_id);
