@@ -9,7 +9,8 @@ const log = (...args) => console.log(process.uptime().toFixed(3), ...args);
 
 const sequelize = new Sequelize(
   process.env.DBNAME,
-  process.env.DBUSER, {
+  process.env.DBUSER,
+  '', {
     host: 'localhost',
     dialect: 'postgres',
     logging: false,
