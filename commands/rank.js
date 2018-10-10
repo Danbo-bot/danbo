@@ -42,22 +42,32 @@ const applyText = (canvas, text) => {
   return ctx.font;
 };
 
-function resolveUserFromEntity(entity) {
+// get all members
+function allMembers(message) {
+  var toReturn = [] ;
+  message.guild.members.filter(mem => 
+    toReturn.push(mem)
+  );
+  return toReturn ;
+};
+
+function resolveUserFromEntity(message,entity) {
   // given some string entity (nickname,username,snowflake)
   // resolve the user object
-  const idOrName = isNaN(parseInt(entity)) ;
-  const tempRole = await message.guild.getMembers();
+  var idOrName = isNaN(parseInt(entity)) ;
 
-  for (let j = 0; j < tempRole.length; j += 1) {
+  const members = allMembers(message);
+
+  for (const m of members) {    
     if (idOrName) {
       // if entity is a nonSnowflake ID
-      if (j.displayName === entity) {
-        return j ;
+      if (m.displayName === entity) {
+        return m ;
       }
     } else {
       // if entity is a snowflake ID
-      if (j.id === entity) {
-        return j ;
+      if (m.id === entity) {
+        return m ;
       }
     }
   }
@@ -69,21 +79,24 @@ module.exports = {
   usage: '<(blank)/mentioned/nickname/username/snowflake>',
   async execute(message, args) {
 
-    const theMember = null;
+    var theMember = null;
     // resolve if user asks for another member or not
     if (args.length === 0) {
       theMember = message.member ;
     } else {
       // if there is a mention, else try to parse
-      const mentionable = await message.mentions.members.first() ;
+      const mentionable = message.mentions.members.first() ;
       if (mentionable) {
         theMember = mentionable ;
       } else {
-        theMember = resolveUserFromEntity(args[0]) ;
+        theMember = resolveUserFromEntity(message,args[0]) ;
       }
     }
 
-    if (!theMember) { return ; }
+    if (!theMember) {
+      message.channel.send('No discernable Member to rank.') ; // >.>
+      return ;
+    }
 
     const [author] = await sequelize.query(
       'SELECT ranked.* FROM (SELECT id, experience, level, rank() OVER(ORDER BY experience DESC) FROM users WHERE server_id = :serverid) as ranked WHERE id = :id',
@@ -93,9 +106,8 @@ module.exports = {
         type: sequelize.QueryTypes.SELECT,
       },
     );
-
     if (!author) { 
-      message.args.send('Author Not Found') ; // >.>
+      message.channel.send('Author Not Found') ; // >.>
       return ;
     } else { 
       registerFont('./assets/fonts/Roboto-Medium.ttf', { family: 'Roboto' });
