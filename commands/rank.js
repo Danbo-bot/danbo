@@ -42,107 +42,153 @@ const applyText = (canvas, text) => {
   return ctx.font;
 };
 
+// get all members
+function allMembers(message) {
+  const toReturn = [];
+  message.guild.members.filter(mem => toReturn.push(mem));
+  return toReturn;
+}
+
+function resolveUserFromEntity(message, entity) {
+  // given some string entity (nickname,username,snowflake)
+  // resolve the user object
+  const idOrName = Number.isNaN(parseInt(entity, 10));
+  let toReturn = null;
+
+  allMembers(message).forEach((m) => {
+    if (idOrName) {
+      // if entity is a nonSnowflake ID
+      if (m.displayName === entity) {
+        toReturn = m;
+      }
+    } else if (m.id === entity) {
+      toReturn = m;
+    }
+  });
+  return toReturn;
+}
+
 module.exports = {
   name: 'rank',
-  description: 'Grabs rank for user',
-  async execute(message) {
+  description: 'Grabs rank for any user',
+  usage: '<(blank)/mentioned/nickname/username/snowflake>',
+  async execute(message, args) {
+    let theMember = null;
+    // resolve if user asks for another member or not
+    if (args.length === 0) {
+      theMember = message.member;
+    } else {
+      // if there is a mention, else try to parse
+      const mentionable = message.mentions.members.first();
+      if (mentionable) {
+        theMember = mentionable;
+      } else {
+        theMember = resolveUserFromEntity(message, args[0]);
+      }
+    }
+
+    if (!theMember) {
+      message.channel.send('No discernable Member to rank.');// >.>
+      return;
+    }
+
     const [author] = await sequelize.query(
       'SELECT ranked.* FROM (SELECT id, experience, level, rank() OVER(ORDER BY experience DESC) FROM users WHERE server_id = :serverid) as ranked WHERE id = :id',
       {
         raw: true,
-        replacements: { serverid: message.guild.id, id: message.author.id },
+        replacements: { serverid: message.guild.id, id: theMember.id },
         type: sequelize.QueryTypes.SELECT,
       },
     );
-    registerFont('./assets/fonts/Roboto-Medium.ttf', { family: 'Roboto' });
-    const expSinceLevel = expSinceLastLevel(author.experience, author.level);
-    const toNextLevel = expToNextLevel(author.experience, author.level);
-    const canvas = Canvas.createCanvas(900, 250);
-    const ctx = canvas.getContext('2d');
+    if (!author) {
+      message.channel.send('Author Not Found');// >.>
+    } else {
+      registerFont('./assets/fonts/Roboto-Medium.ttf', { family: 'Roboto' });
+      const expSinceLevel = expSinceLastLevel(author.experience, author.level);
+      const toNextLevel = expToNextLevel(author.experience, author.level);
+      const canvas = Canvas.createCanvas(900, 250);
+      const ctx = canvas.getContext('2d');
 
-    ctx.fillStyle = '#000';
-    ctx.save();
-    roundedImage(ctx, 0, 0, canvas.width, canvas.height, 10);
-    ctx.clip();
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.restore();
+      ctx.fillStyle = '#000';
+      ctx.save();
+      roundedImage(ctx, 0, 0, canvas.width, canvas.height, 10);
+      ctx.clip();
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
 
-    ctx.fillStyle = 'rgba(169, 169, 169, .2)';
-    ctx.save();
-    ctx.fillRect(0, 99, canvas.width, 115);
-    ctx.restore();
+      ctx.fillStyle = 'rgba(169, 169, 169, .2)';
+      ctx.save();
+      ctx.fillRect(0, 99, canvas.width, 115);
+      ctx.restore();
 
-    ctx.font = applyText(canvas, message.member.displayName);
-    ctx.fillStyle = '#FFF';
-    ctx.textBaseline = 'bottom';
-    ctx.fillText(message.member.displayName, 250, 104);
-    const nameText = ctx.measureText(message.member.displayName).width;
-    ctx.font = '28px Roboto';
-    ctx.fillStyle = '#CECECE';
-    ctx.textBaseline = 'bottom';
-    ctx.fillText(`#${message.author.discriminator}`, 250 + nameText + 2, 99);
+      ctx.font = applyText(canvas, theMember.displayName);
+      ctx.fillStyle = '#FFF';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(theMember.displayName, 250, 104);
+      const nameText = ctx.measureText(theMember.displayName).width;
+      ctx.font = '28px Roboto';
+      ctx.fillStyle = '#CECECE';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(`#${theMember.user.discriminator}`, 250 + nameText + 2, 99);
 
-    ctx.font = '44px Roboto';
-    ctx.fillStyle = '#FFF';
-    ctx.textBaseline = 'bottom';
-    ctx.fillText(`Level ${author.level}`, 250, canvas.height - 90);
+      ctx.font = '44px Roboto';
+      ctx.fillStyle = '#FFF';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(`Level ${author.level}`, 250, canvas.height - 90);
 
-    ctx.font = '28px Roboto';
-    ctx.fillStyle = '#FFF';
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'bottom';
-    ctx.fillText(`Total EXP: ${author.experience}`, canvas.width - 45, canvas.height - 90);
+      ctx.font = '28px Roboto';
+      ctx.fillStyle = '#FFF';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(`Total EXP: ${author.experience}`, canvas.width - 45, canvas.height - 90);
 
-    ctx.font = '44px Roboto';
-    ctx.fillStyle = '#337ab7';
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'top';
-    ctx.fillText(`#${author.rank}`, canvas.width - 35, 10);
-    const rankText = ctx.measureText(`#${author.rank}`).width;
+      ctx.font = '44px Roboto';
+      ctx.fillStyle = '#337ab7';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'top';
+      ctx.fillText(`#${author.rank}`, canvas.width - 35, 10);
+      const rankText = ctx.measureText(`#${author.rank}`).width;
 
-    ctx.font = '44px Roboto';
-    ctx.fillStyle = '#FFF';
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'top';
-    ctx.fillText('Rank:', canvas.width - 35 - rankText, 10);
+      ctx.font = '44px Roboto';
+      ctx.fillStyle = '#FFF';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'top';
+      ctx.fillText('Rank:', canvas.width - 35 - rankText, 10);
 
-    // Set faux rounded corners
-    ctx.save();
-    roundedImage(ctx, 30, 30, 195, 195, 10);
-    ctx.clip();
+      // Set faux rounded corners
+      ctx.save();
+      roundedImage(ctx, 30, 30, 195, 195, 10);
+      ctx.clip();
 
-    // Add avatar to image
-    const { body: buffer } = await snekfetch.get(message.author.displayAvatarURL);
-    const avatar = await Canvas.loadImage(buffer);
-    ctx.drawImage(avatar, 30, 30, 195, 195);
-    ctx.restore();
+      // Add avatar to image
+      const { body: buffer } = await snekfetch.get(theMember.user.displayAvatarURL);
+      const avatar = await Canvas.loadImage(buffer);
+      ctx.drawImage(avatar, 30, 30, 195, 195);
+      ctx.restore();
 
-    ctx.save();
-    ctx.fillStyle = '#595959';
-    roundedImage(ctx, 240, canvas.height - 90, 620, 42, 14);
-    ctx.clip();
-    ctx.fillRect(240, canvas.height - 90, 620, 42);
-    ctx.restore();
+      ctx.save();
+      ctx.fillStyle = '#595959';
+      roundedImage(ctx, 240, canvas.height - 90, 620, 42, 14);
+      ctx.clip();
+      ctx.fillRect(240, canvas.height - 90, 620, 42);
+      ctx.restore();
 
-    ctx.save();
-    ctx.fillStyle = '#337ab7';
-    const percentage = 620 * (expSinceLevel / toNextLevel);
-    roundedImage(ctx, 240, canvas.height - 90, percentage, 42, 14);
-    ctx.clip();
-    ctx.fillRect(240, canvas.height - 90, percentage, 42);
-    ctx.restore();
+      ctx.save();
+      ctx.fillStyle = '#337ab7';
+      const percentage = 620 * (expSinceLevel / toNextLevel);
+      roundedImage(ctx, 240, canvas.height - 90, percentage, 42, 14);
+      ctx.clip();
+      ctx.fillRect(240, canvas.height - 90, percentage, 42);
+      ctx.restore();
 
-    ctx.font = '28px Roboto';
-    ctx.fillStyle = '#000';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(`${expSinceLevel}/${toNextLevel}`, 550, canvas.height - 68);
+      ctx.font = '28px Roboto';
+      ctx.fillStyle = '#000';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`${expSinceLevel}/${toNextLevel}`, 550, canvas.height - 68);
 
-    const attachment = new Discord.Attachment(canvas.toBuffer(), 'rank-card.png');
-    if (author) {
+      const attachment = new Discord.Attachment(canvas.toBuffer(), 'rank-card.png');
       message.channel.send('', attachment);
-      return;
     }
-    message.args.send('fuck');
   },
 };

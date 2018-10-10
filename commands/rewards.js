@@ -24,7 +24,10 @@ module.exports = {
         return;
       }
       const tempRole = message.guild.roles.find('name', args[1]);
-      if (!tempRole) { return; }
+      if (!tempRole) {
+        message.channel.send(`No Role Found`);
+        return;
+      }
       Rewards.create({
         role_id: tempRole.id,
         role_name: tempRole.name,
@@ -36,7 +39,7 @@ module.exports = {
           defaults: { remove_roles: false },
         });
         newReward.setServer(thisServer);
-        message.channel.send(`New role created:\nRole ID:${newReward.role_id}\nUnlocked:${newReward.level_gained}`);
+        message.channel.send(`New rewards role created:\nRole ID:${newReward.role_id}\nUnlocked:${newReward.level_gained}`);
       });
     } else if (args[0] === 'rem' || args[0] === 'remove') {
       if (args.length < 2) {
@@ -44,13 +47,20 @@ module.exports = {
         return;
       }
       const tempRole = message.guild.roles.find('name', args[1]);
-      if (!tempRole) { return; }
+
+      if (!tempRole) {
+        message.channel.send(`No Role Found`);
+        return;
+      }
       Rewards.destroy({
         where: {
           role_id: tempRole.id,
         },
       }).then((success) => {
-        if (success === 0) { return; }
+        if (success === 0) {
+          message.channel.send(`Couldn't remove role`);
+          return;
+        }
         Rewards.findAll({
           where: {
             server_id: message.guild.id,
