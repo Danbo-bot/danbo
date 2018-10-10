@@ -36,12 +36,13 @@ module.exports = {
       return message.reply('that\'s not a valid command!') ;
     } 
 
-    toReply.push('**Name:** ${command.name}') ;
+    toReply.push(`**Command**`) ; 
+    toReply.push(`**Name:** ${command.name}`) ;
 
-    if (command.aliases) { toReply.push('**Aliases:** ${command.aliases.join(', ')}') ; }
-    if (command.description) { toReply.push('**Description:** ${command.description}') ; }
-    if (command.usage) { toReply.push('**Usage:** ${prefix}${command.name} ${command.usage}') ; }
-    if (command.cooldown) { toReply.push('**Cooldown:** ${command.cooldown || 3} second(s)') ; }
+    if (command.aliases) { toReply.push(`**Aliases:** ${command.aliases.join(', ')}`) ; }
+    if (command.description) { toReply.push(`**Description:** ${command.description}`) ; }
+    if (command.usage) { toReply.push(`**Usage:** ${prefix}${command.name} ${command.usage}`) ; }
+    if (command.cooldown) { toReply.push(`**Cooldown:** ${command.cooldown || 3} second(s)`) ; }
 
     // if command found and send to dm, sends user a dm
     if (sendToDm) {
