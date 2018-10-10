@@ -44,33 +44,28 @@ const applyText = (canvas, text) => {
 
 // get all members
 function allMembers(message) {
-  var toReturn = [] ;
-  message.guild.members.filter(mem => 
-    toReturn.push(mem)
-  );
-  return toReturn ;
-};
+  const toReturn = [];
+  message.guild.members.filter(mem => toReturn.push(mem));
+  return toReturn;
+}
 
-function resolveUserFromEntity(message,entity) {
+function resolveUserFromEntity(message, entity) {
   // given some string entity (nickname,username,snowflake)
   // resolve the user object
-  var idOrName = isNaN(parseInt(entity)) ;
+  const idOrName = Number.isNaN(parseInt(entity, 10));
+  let toReturn = null;
 
-  const members = allMembers(message);
-
-  for (const m of members) {    
+  allMembers(message).forEach((m) => {
     if (idOrName) {
       // if entity is a nonSnowflake ID
       if (m.displayName === entity) {
-        return m ;
+        toReturn = m;
       }
-    } else {
-      // if entity is a snowflake ID
-      if (m.id === entity) {
-        return m ;
-      }
+    } else if (m.id === entity) {
+      toReturn = m;
     }
-  }
+  });
+  return toReturn;
 }
 
 module.exports = {
@@ -78,24 +73,23 @@ module.exports = {
   description: 'Grabs rank for any user',
   usage: '<(blank)/mentioned/nickname/username/snowflake>',
   async execute(message, args) {
-
-    var theMember = null;
+    let theMember = null;
     // resolve if user asks for another member or not
     if (args.length === 0) {
-      theMember = message.member ;
+      theMember = message.member;
     } else {
       // if there is a mention, else try to parse
-      const mentionable = message.mentions.members.first() ;
+      const mentionable = message.mentions.members.first();
       if (mentionable) {
-        theMember = mentionable ;
+        theMember = mentionable;
       } else {
-        theMember = resolveUserFromEntity(message,args[0]) ;
+        theMember = resolveUserFromEntity(message, args[0]);
       }
     }
 
     if (!theMember) {
-      message.channel.send('No discernable Member to rank.') ; // >.>
-      return ;
+      message.channel.send('No discernable Member to rank.');// >.>
+      return;
     }
 
     const [author] = await sequelize.query(
@@ -106,10 +100,9 @@ module.exports = {
         type: sequelize.QueryTypes.SELECT,
       },
     );
-    if (!author) { 
-      message.channel.send('Author Not Found') ; // >.>
-      return ;
-    } else { 
+    if (!author) {
+      message.channel.send('Author Not Found');// >.>
+    } else {
       registerFont('./assets/fonts/Roboto-Medium.ttf', { family: 'Roboto' });
       const expSinceLevel = expSinceLastLevel(author.experience, author.level);
       const toNextLevel = expToNextLevel(author.experience, author.level);
@@ -196,7 +189,6 @@ module.exports = {
 
       const attachment = new Discord.Attachment(canvas.toBuffer(), 'rank-card.png');
       message.channel.send('', attachment);
-      return;
     }
   },
 };
