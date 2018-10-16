@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 const Canvas = require('canvas');
 const { registerFont } = require('canvas');
 const snekfetch = require('snekfetch');
+const { alert } = require('../colors.json');
 
 function roundedImage(ctx, x, y, width, height, radius) {
   ctx.beginPath();
@@ -72,7 +73,10 @@ module.exports = {
   name: 'rank',
   description: 'Grabs rank for any user',
   usage: '<(blank)/mentioned/nickname/username/snowflake>',
+
   async execute(message, args) {
+    const embed = new Discord.RichEmbed().setTimestamp();
+
     let theMember = null;
     // resolve if user asks for another member or not
     if (args.length === 0) {
@@ -88,7 +92,8 @@ module.exports = {
     }
 
     if (!theMember) {
-      message.channel.send('No discernable Member to rank.');// >.>
+      embed.setColor(alert).setTitle('No discernable Member to rank.');
+      message.channel.send({ embed });// >.>
       return;
     }
 
@@ -101,7 +106,8 @@ module.exports = {
       },
     );
     if (!author) {
-      message.channel.send('Author Not Found');// >.>
+      embed.setColor(alert).setTitle('Author Not Found');
+      message.channel.send({ embed });// >.>
     } else {
       registerFont('./assets/fonts/Roboto-Medium.ttf', { family: 'Roboto' });
       const expSinceLevel = expSinceLastLevel(author.experience, author.level);

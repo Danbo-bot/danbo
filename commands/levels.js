@@ -1,4 +1,6 @@
 const { Servers } = require('../dbObjects');
+const { warning, okay } = require('../colors.json');
+const Discord = require('discord.js');
 
 function StringReplace(inString, serverName, url) {
   let retString = inString;
@@ -16,12 +18,20 @@ module.exports = {
   description: 'Returns a url to the servers leaderboard',
   async execute(message) {
     const currentServer = await Servers.find({ where: { server_id: message.guild.id } });
+    const embed = new Discord.RichEmbed().setTimestamp();
+
     if (!currentServer) {
-      message.channel.send('This server is not being tracked right now, if this is in error contact Dashwav');
+      embed.setColor(warning)
+        .setDescription('This server is not being tracked right now, if this is in error contact Dashwav')
+        .setTitle('Unsuccessful');
+      message.channel.send({ embed });
       return;
     }
-    const newString = StringReplace(currentServer.levels_string, currentServer.server_name, `https://www.danbo.space/leaderboards/${currentServer.server_id}`);
-    message.channel.send(newString);
+    const toReturn = StringReplace(currentServer.levels_string, currentServer.server_name, `https://www.danbo.space/leaderboards/${currentServer.server_id}`);
+    embed.setColor(okay)
+      .setDescription(toReturn)
+      .setTitle('Leaderboards');
+    message.channel.send({ embed });
   },
 };
 

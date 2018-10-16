@@ -86,7 +86,7 @@ module.exports = {
           allRewards.forEach((value) => {
             returnString += `\`${value.role_name} -- ${value.level_gained}\`\n`;
           });
-          embed.setTitle(`Successfully deleted the reward ${args[1]}`)
+          embed.setTitle(`Successfully deleted the reward role ${args[1]}`)
             .setDescription(returnString).setColor(okay);
           message.channel.send({ embed });
         });

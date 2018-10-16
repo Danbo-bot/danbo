@@ -1,6 +1,6 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-
+const { alert } = require('./colors.json');
 const { dev } = require('./config.json');
 
 const client = new Discord.Client();
@@ -122,7 +122,7 @@ async function userOnLevel(member, guild) {
       const index = roles.indexOf(tempRole);
       if (index > -1) {
         storedRoles.push(allRewards[j]);
-	if (server.remove_roles) { roles.splice(index, 1); }
+        if (server.remove_roles) { roles.splice(index, 1); }
       }
       if (allRewards[j].level_gained <= user.level) {
         if (!currentRole) {
@@ -172,19 +172,23 @@ client.on('message', async (message) => {
   if (!client.commands.has(commandName)) return;
 
   const command = client.commands.get(commandName);
+  const embed = new Discord.RichEmbed().setTimestamp();
+
   if (command.args && !args.length) {
-    let reply = `You didn't provide any arguments, ${message.author}!`;
+    let reply = 'You didn\'t provide any arguments!';
     if (command.usage) {
       reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
     }
-    message.channel.send(reply);
+    embed.setTitle('Error').setDescription(reply).setColor(alert);
+    message.reply({ embed });
     return;
   }
   try {
     command.execute(message, args);
   } catch (error) {
     console.error(error);
-    message.reply('there was an error trying to execute that command!');
+    embed.setTitle('Error').setDescription('There was an error trying to execute that command!').setColor(alert);
+    message.reply({ embed });
   }
 });
 
