@@ -1,30 +1,50 @@
 const { Blacklisted, Servers } = require('../dbObjects');
+const { alert, warning, okay } = require('../colors.json');
+const Discord = require('discord.js');
 
 module.exports = {
   name: 'blacklist',
   description: 'Returns the reward ranks for a server, allows one to add more',
   usage: '<add/remove> <rolename: str> <levelGained: int>',
+
   async execute(message, args) {
     if (!message.member.permissions.has('MANAGE_GUILD')) { return; }
+    const embed = new Discord.RichEmbed().setTimestamp();
+
     if (args.length === 0) {
       Blacklisted.findAll({
         where:
         { server_id: message.guild.id },
       }).then((serverBlacklisted) => {
-        let returnString = `Blacklisted for ${message.guild.name}:\n`;
+        let returnString = '';
         serverBlacklisted.forEach((value) => {
-          returnString += `${value.role_name} - ${value.level_gained}\n`;
+          returnString += `\`${value.role_name}\`\n`;
         });
-        message.channel.send(returnString);
+        embed.setTitle(`Blacklisted roles for ${message.guild.name}`)
+          .setDescription(returnString).setColor(okay);
+        message.channel.send({ embed });
       });
     }
+
     if (args[0] === 'add') {
       if (args.length < 2) {
-        message.channel.send('Not enough arguments');
+        embed.setDescription('Not enough arguments')
+          .setColor(warning);
+
+        message.channel.send({ embed });
         return;
       }
+
       const tempRole = message.guild.roles.find('name', args[1]);
-      if (!tempRole) { return; }
+
+      if (!tempRole) {
+        embed.setDescription('No Role Found')
+          .setColor(warning);
+
+        message.channel.send({ embed });
+        return;
+      }
+
       Blacklisted.create({
         role_id: tempRole.id,
         role_name: tempRole.name,
@@ -35,31 +55,55 @@ module.exports = {
           defaults: { remove_roles: false },
         });
         newReward.setServer(thisServer);
-        message.channel.send(`New role created:\nRole ID:${newReward.role_id}\nUnlocked:${newReward.level_gained}`);
+
+        embed.setTitle('New blacklist role created')
+          .setDescription(`**Role Name:** ${args[1]}\n**Role ID:** ${newReward.role_id}\n`)
+          .setColor(okay);
+
+        message.channel.send({ embed });
       });
     } else if (args[0] === 'rem' || args[0] === 'remove') {
       if (args.length < 2) {
-        message.channel.send('Not enough arguments');
+        embed.setDescription('Not enough arguments')
+          .setColor(warning);
+
+        message.channel.send({ embed });
         return;
       }
+
       const tempRole = message.guild.roles.find('name', args[1]);
-      if (!tempRole) { return; }
+
+      if (!tempRole) {
+        embed.setDescription('No Role Found')
+          .setColor(warning);
+
+        message.channel.send({ embed });
+        return;
+      }
       Blacklisted.destroy({
         where: {
           role_id: tempRole.id,
         },
       }).then((success) => {
-        if (success === 0) { return; }
+        if (success === 0) {
+          embed.setDescription('Error with removing role')
+            .setColor(alert);
+
+          message.channel.send({ embed });
+          return;
+        }
         Blacklisted.findAll({
           where: {
             server_id: message.guild.id,
           },
         }).then((allBlacklisted) => {
-          let returnString = `Successfully deleted the role reward\n Current blacklist for ${message.guild.name}:\n`;
+          let returnString = `Current blacklist roles for ${message.guild.name}:\n`;
           allBlacklisted.forEach((value) => {
-            returnString += `${value.role_name} - ${value.level_gained}\n`;
+            returnString += `\`${value.role_name}\`\n`;
           });
-          message.channel.send(returnString);
+          embed.setTitle(`Successfully deleted the blacklist role ${args[1]}`)
+            .setColor(okay).setDescription(returnString);
+          message.channel.send({ embed });
         });
       });
     }
