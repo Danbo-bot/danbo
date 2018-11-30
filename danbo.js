@@ -22,6 +22,7 @@ const {
 } = require('./dbObjects');
 
 async function addExperience(user, member, guild, amount) {
+  console.log(amount);
   // If the user isn't blacklisted then add amount of xp to them
   // this function also assigns their level based on their exp
   // returns true if successful (and not blacklisted), false otherwise
