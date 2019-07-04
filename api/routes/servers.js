@@ -12,6 +12,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
+  console.log(req.params);
   const foundServer = await Servers.find({
     where:
         {
@@ -46,7 +47,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/:id/user/:userId', async (req, res) => {
-  const foundServer = await Servers.find({
+  const foundServer = await Servers.findOne({
     where: {
       server_id: req.params.id,
     },
@@ -57,7 +58,7 @@ router.get('/:id/user/:userId', async (req, res) => {
     res.status(404).send('There isn\'t a server with that id in our database').end();
     return;
   }
-  const foundUser = await Users.find({
+  const foundUser = await Users.findOne({
     where: { server_id: foundServer.server_id, id: req.params.userId },
   });
   if (!foundUser) { res.status(404).send('Couldn\'t find user on server').end(); }
