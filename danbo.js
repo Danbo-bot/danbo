@@ -118,7 +118,7 @@ async function userOnLevel(member, guild) {
     let currentRole = null; // Stores the reward role to apply
     const storedRoles = []; // stores current reward role of user
     for (let j = 0; j < allRewards.length; j += 1) {
-      const tempRole = guild.roles.findAll('id', allRewards[j].role_id);
+      const tempRole = guild.roles.findOne('id', allRewards[j].role_id);
       const index = roles.indexOf(tempRole);
       if (index > -1) {
         storedRoles.push(allRewards[j]);
@@ -135,7 +135,7 @@ async function userOnLevel(member, guild) {
     // If stored roles does not include Current role or if stored roles is greater than 1
     if (!(storedRoles.includes(currentRole) && storedRoles.length === 1)) {
       if (currentRole && roles) {
-        roles.push(guild.roles.findAll('id', currentRole.role_id));
+        roles.push(guild.roles.findOne('id', currentRole.role_id));
         await theMember.setRoles(roles);
       }
     }
