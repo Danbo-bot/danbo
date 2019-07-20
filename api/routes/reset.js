@@ -1,4 +1,6 @@
 const express = require('express');
+const auth = require('../services/auth.js');
+
 const router = express.Router();
 
 const {
@@ -11,13 +13,16 @@ async function ResetLeaderboards(serverId) {
   });
 }
 
-/* GET listing. */
-router.get('/', (req, res) => {
-  res.send('respond with a resource');
-});
-
 router.get('/:id', async (req, res) => {
-  console.log(req.params);
+  try {
+    const ver = auth.verify(req, res);
+    if (!ver) {
+      return;
+    }
+  } catch (err) {
+    console.log('Error:' + err);
+    return;
+  }
   const foundServer = await Servers.findOne({
     where:
         {
@@ -30,7 +35,7 @@ router.get('/:id', async (req, res) => {
     res.sendStatus(404);
   } else {
     ResetLeaderboards(foundServer.server_id).then((deleted) => {
-      console.log(deleted);
+      console.log('Removed ' + deleted + ' users.');
       res.sendStatus(200);
     }).catch((err) => {
       res.sendStatus(500);

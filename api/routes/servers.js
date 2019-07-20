@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 
 router.get('/:id', async (req, res) => {
   console.log(req.params);
-  const foundServer = await Servers.find({
+  const foundServer = await Servers.findOne({
     where:
         {
           server_id: req.params.id,
