@@ -38,8 +38,8 @@ router.get('/:id', async (req, res) => {
       console.log('Removed ' + deleted + ' users.');
       res.sendStatus(200);
     }).catch((err) => {
-      res.sendStatus(500);
-      console.log(err);
+      res.status(500).send('No users removed.');
+      console.error(err);
     });
   }
 });

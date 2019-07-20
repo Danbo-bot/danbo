@@ -9,6 +9,7 @@ const helmet = require('helmet');
 const indexRouter = require('./routes/index');
 const serverRouter = require('./routes/servers');
 const resetRouter = require('./routes/reset');
+const updateRouter = require('./routes/update');
 
 const app = express();
 app.use(cors());
@@ -28,6 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/servers', serverRouter);
 app.use('/reset', resetRouter);
+app.use('/update', updateRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

@@ -6,11 +6,9 @@ const bottoken = config.token.split('.')[2];
 // JWT key construction
 
 exports.verify = function(req, res) {
-  console.log('auth:' + req.headers.authorization);
   let p = null;
   if (req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT') {
     const jwt = JWT.decode(req.headers.authorization.split(' ')[1], { complete: true });
-    console.log(jwt.payload.token)
 
     if (jwt.payload.token && jwt.payload.token != bottoken) {
       res.statusMessage = 'Authentication failed. Incorrect Key.';
