@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@panva/jose": "^1.4.1",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.4",
     "debug": "~2.6.9",
@@ -15,7 +16,7 @@
     "http-errors": "~1.6.2",
     "morgan": "~1.9.0",
     "pg": "^7.4.3",
-    "pug": "2.0.0-beta11",
-    "sequelize": "^4.38.0"
+    "pug": "^2.0.4",
+    "sequelize": "^6.0.0"
   }
 }
