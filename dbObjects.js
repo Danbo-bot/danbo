@@ -6,7 +6,6 @@ const sequelize = new Sequelize(dbCreds.dbName, dbCreds.dbUser, dbCreds.dbPass, 
   host: 'localhost',
   dialect: 'postgres',
   logging: false,
-  operatorsAliases: false,
 });
 
 const Users = sequelize.import('models/Users');

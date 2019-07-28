@@ -4,12 +4,13 @@
   "description": "Discord bot, meant to be a simpler mee6",
   "main": "slowmode.js",
   "dependencies": {
-    "canvas": "^2.0.0-alpha.12",
+    "bufferutil": "^4.0.1",
+    "canvas": "^2.5.0",
     "discord.js": "^11.3.2",
     "eslint-config-airbnb": "^16.1.0",
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
-    "sequelize": "^4.37.10",
+    "sequelize": "^6.0.0",
     "snekfetch": "^4.0.4"
   },
   "devDependencies": {

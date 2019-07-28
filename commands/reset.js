@@ -17,7 +17,7 @@ module.exports = {
     // Check User Permissions
     if (!message.member.permissions.has('MANAGE_GUILD')) { return; }
 
-    const currentServer = await Servers.find({ where: { server_id: message.guild.id } });
+    const currentServer = await Servers.findOne({ where: { server_id: message.guild.id } });
     const embed = new Discord.RichEmbed().setTimestamp();
     const successEmbed = new Discord.RichEmbed().setTimestamp();
     const errorEmbed = new Discord.RichEmbed().setTimestamp();
