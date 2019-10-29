@@ -9,7 +9,7 @@
     "eslint-config-airbnb": "^16.1.0",
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
-    "sequelize": "^4.37.10",
+    "sequelize": "^5.15.1",
     "snekfetch": "^4.0.4"
   },
   "devDependencies": {
