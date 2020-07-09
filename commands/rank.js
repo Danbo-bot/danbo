@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const Canvas = require('canvas');
 const { registerFont } = require('canvas');
-const snekfetch = require('snekfetch');
+const axios = require('axios').default;
 const { sequelize } = require('../dbObjects');
 const { alert } = require('../colors.json');
 
@@ -138,7 +138,7 @@ async function createImage(member, user) {
   ctx.clip();
 
   // Add avatar to image
-  const { body: buffer } = await snekfetch.get(member.user.displayAvatarURL({ format: 'png' }));
+  const { data: buffer } = await axios.get(member.user.displayAvatarURL({ format: 'png' }), { responseType: 'arraybuffer' });
   const avatar = await Canvas.loadImage(buffer);
   ctx.drawImage(avatar, 30, 30, 195, 195);
   ctx.restore();

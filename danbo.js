@@ -147,6 +147,7 @@ const { prefix, token } = require('./config.json');
 
 commandFiles.forEach((file) => {
   const string = `./commands/${file}`;
+  // eslint-disable-next-line import/no-dynamic-require,global-require
   const command = require(string);
   // set a new item in the Collection
   // with the key as the command name and the value as the exported module
