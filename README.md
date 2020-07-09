@@ -2,7 +2,10 @@
 Dead simple discord experience bot
 
 # Invite
-[Click here](https://www.danbo.space/) for the Danbo website with the leaderboards <https://www.danbo.space/leaderboards/your-guild-id>
+[Click here](https://www.danbo.space/) for the Danbo website with the leaderboards
+
+You can find your guild's leaderboard here: <https://www.danbo.space/leaderboards/your-guild-id> (replace your-guild-id with you guild's id)
+
 [Click here](https://discordapp.com/oauth2/authorize?client_id=460722914711568395&scope=bot&permissions=268823744) to invite Danbo to your server
 
 # Development
