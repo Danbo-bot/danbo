@@ -137,7 +137,7 @@ async function userOnLevel(member, guild) {
     if (!(storedRoles.includes(currentRole) && storedRoles.length === 1)) {
       if (currentRole && roles) {
         roles.push(guild.roles.cache.find((role) => role.id === currentRole.role_id));
-        await theMember.setRoles(roles);
+        await theMember.roles.set(roles);
       }
     }
   }
