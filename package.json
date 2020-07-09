@@ -5,7 +5,7 @@
   "main": "slowmode.js",
   "dependencies": {
     "canvas": "^2.6.0",
-    "discord.js": "^11.5.1",
+    "discord.js": "^12.2.0",
     "eslint-config-airbnb": "^18.0.1",
     "pg": "^7.12.1",
     "pg-hstore": "^2.3.3",

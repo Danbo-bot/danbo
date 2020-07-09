@@ -8,7 +8,7 @@ const client = new Discord.Client();
 process.env.FONTCONFIG_PATH = './assets/fonts';
 
 client.commands = new Discord.Collection();
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync('./commands').filter((file) => file.endsWith('.js'));
 
 // Map-object that logs who has gotten exp in the last minute
 const lastMinute = new Discord.Collection();
@@ -30,8 +30,8 @@ async function addExperience(user, member, guild, amount) {
     if (lastMinute.has(user.id)) return false;
   }
   const allBlacklisted = await Blacklisted.findAll({ where: { server_id: guild.id } });
-  const memberRoles = member.roles.array();
-  const allRoles = allBlacklisted.map(role => role.role_id);
+  const memberRoles = member.roles.cache.values();
+  const allRoles = allBlacklisted.map((role) => role.role_id);
   let hasRole = false;
   for (let i = 0; i < memberRoles.length && !hasRole; i += 1) {
     for (let k = 0; k < allRoles.length && !hasRole; k += 1) {
@@ -39,7 +39,7 @@ async function addExperience(user, member, guild, amount) {
     }
   }
   if (hasRole) { return false; }
-  const dbUser = await Users.find({
+  const dbUser = await Users.findOne({
     where:
     {
       id: user.id,
@@ -60,7 +60,7 @@ async function addExperience(user, member, guild, amount) {
       id: dbUser.id,
       name: user.username,
       disc: user.discriminator,
-      avatar_url: user.avatarURL,
+      avatar_url: user.displayAvatarURL(),
       server_id: guild.id,
       experience: dbUser.experience,
       level: dbUser.level,
@@ -68,11 +68,12 @@ async function addExperience(user, member, guild, amount) {
     lastMinute.set(user.id, guild.id);
     return true;
   }
+  console.log(user);
   await Users.create({
     id: user.id,
     name: user.username,
     disc: user.discriminator,
-    avatar_url: user.avatarURL,
+    avatar_url: user.displayAvatarURL(),
     server_id: guild.id,
     experience: amount,
   });
@@ -81,7 +82,7 @@ async function addExperience(user, member, guild, amount) {
 }
 
 async function userOnLevel(member, guild) {
-  const user = await Users.find({
+  const user = await Users.findOne({
     where:
     {
       id: member.id,
@@ -91,7 +92,7 @@ async function userOnLevel(member, guild) {
 
   if (!user) { return; }
 
-  const server = await Servers.find({
+  const server = await Servers.findOne({
     where:
     {
       server_id: guild.id,
@@ -114,11 +115,11 @@ async function userOnLevel(member, guild) {
   // than their current role. Better for API
   if (allRewards) {
     const theMember = member;
-    const roles = await theMember.roles.array();
+    const roles = await theMember.roles.cache.values();
     let currentRole = null; // Stores the reward role to apply
     const storedRoles = []; // stores current reward role of user
     for (let j = 0; j < allRewards.length; j += 1) {
-      const tempRole = guild.roles.find('id', allRewards[j].role_id);
+      const tempRole = guild.roles.findOne('id', allRewards[j].role_id);
       const index = roles.indexOf(tempRole);
       if (index > -1) {
         storedRoles.push(allRewards[j]);
@@ -135,7 +136,7 @@ async function userOnLevel(member, guild) {
     // If stored roles does not include Current role or if stored roles is greater than 1
     if (!(storedRoles.includes(currentRole) && storedRoles.length === 1)) {
       if (currentRole && roles) {
-        roles.push(guild.roles.find('id', currentRole.role_id));
+        roles.push(guild.roles.findOne('id', currentRole.role_id));
         await theMember.setRoles(roles);
       }
     }
@@ -172,7 +173,7 @@ client.on('message', async (message) => {
   if (!client.commands.has(commandName)) return;
 
   const command = client.commands.get(commandName);
-  const embed = new Discord.RichEmbed().setTimestamp();
+  const embed = new Discord.MessageEmbed().setTimestamp();
 
   if (command.args && !args.length) {
     let reply = 'You didn\'t provide any arguments!';
