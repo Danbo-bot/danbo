@@ -15,7 +15,10 @@ module.exports = {
 
   async execute(message) {
     // Check User Permissions
-    if (!message.member.permissions.has('MANAGE_ROLES')) { return; }
+    if (!message.member.permissions.has('MANAGE_ROLES')) {
+      console.log('Bot does not have correct permissions');
+      return;
+    }
 
     const currentServer = await Servers.findOne({ where: { server_id: message.guild.id } });
     const embed = new Discord.MessageEmbed().setTimestamp();

@@ -8,7 +8,10 @@ module.exports = {
   usage: '<add/remove> <rolename: str> <levelGained: int>',
 
   async execute(message, args) {
-    if (!message.member.permissions.has('MANAGE_ROLES')) { return; }
+    if (!message.member.permissions.has('MANAGE_ROLES')) {
+      console.log('Bot does not have correct permissions');
+      return;
+    }
     const embed = new Discord.MessageEmbed().setTimestamp();
 
     if (args.length === 0) {
