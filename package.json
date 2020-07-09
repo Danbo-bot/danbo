@@ -5,9 +5,8 @@
   "main": "slowmode.js",
   "dependencies": {
     "axios": "^0.19.2",
-    "canvas": "^2.6.0",
+    "canvas": "^2.6.1",
     "discord.js": "^12.2.0",
-    "eslint-config-airbnb": "^18.0.1",
     "pg": "^7.12.1",
     "pg-hstore": "^2.3.3",
     "sequelize": "^5.19.6"
