@@ -17,6 +17,7 @@ module.exports = {
         where:
         { server_id: message.guild.id },
       }).then((serverRewards) => {
+        console.log(serverRewards);
         let returnString = `There are no rewards for this server - add them with \`${prefix}rewards add <role>\``;
         if (serverRewards.length > 0) {
           returnString = '**Name   --    Level**\n';
@@ -26,7 +27,8 @@ module.exports = {
         }
         embed.setTitle(`Rewards roles for ${message.guild.name}`.substring(0, 255))
           .setDescription(returnString.substring(0, 2048)).setColor(okay);
-        message.channel.send({ embed }).catch(console.error);
+        console.log(embed);
+        console.log(message.channel.send({ embed }).catch(console.error));
       }).catch(console.error);
     }
     if (args[0] === 'add') {
