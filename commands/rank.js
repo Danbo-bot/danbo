@@ -174,7 +174,7 @@ module.exports = {
   usage: '<(blank)/mentioned/nickname/username/snowflake>',
 
   async execute(message, args) {
-    const embed = new Discord.RichEmbed().setTimestamp();
+    const embed = new Discord.MessageEmbed().setTimestamp();
 
     let theMember = null;
     // resolve if user asks for another member or not

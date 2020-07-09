@@ -9,7 +9,7 @@ module.exports = {
 
   async execute(message, args) {
     if (!message.member.permissions.has('MANAGE_GUILD')) { return; }
-    const embed = new Discord.RichEmbed().setTimestamp();
+    const embed = new Discord.MessageEmbed().setTimestamp();
 
     if (args.length === 0) {
       Rewards.findAll({
@@ -31,7 +31,7 @@ module.exports = {
         message.channel.send({ embed });
         return;
       }
-      const tempRole = message.guild.roles.find('name', args[1]);
+      const tempRole = message.guild.roles.findOne('name', args[1]);
       if (!tempRole) {
         embed.setDescription(`No Role Found for ${args[1]}`).setColor(alert);
         message.channel.send({ embed });
@@ -60,7 +60,7 @@ module.exports = {
         message.channel.send({ embed });
         return;
       }
-      const tempRole = message.guild.roles.find('name', args[1]);
+      const tempRole = message.guild.roles.findOne('name', args[1]);
 
       if (!tempRole) {
         embed.setDescription(`No Role Found for ${args[1]}`).setColor(alert);

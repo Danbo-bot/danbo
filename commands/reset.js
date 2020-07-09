@@ -1,6 +1,6 @@
+const Discord = require('discord.js');
 const { Users, Servers } = require('../dbObjects');
 const { alert, warning, okay } = require('../colors.json');
-const Discord = require('discord.js');
 
 async function ResetLeaderboards(serverId) {
   return Users.destroy({
@@ -17,10 +17,10 @@ module.exports = {
     // Check User Permissions
     if (!message.member.permissions.has('MANAGE_GUILD')) { return; }
 
-    const currentServer = await Servers.find({ where: { server_id: message.guild.id } });
-    const embed = new Discord.RichEmbed().setTimestamp();
-    const successEmbed = new Discord.RichEmbed().setTimestamp();
-    const errorEmbed = new Discord.RichEmbed().setTimestamp();
+    const currentServer = await Servers.findOne({ where: { server_id: message.guild.id } });
+    const embed = new Discord.MessageEmbed().setTimestamp();
+    const successEmbed = new Discord.MessageEmbed().setTimestamp();
+    const errorEmbed = new Discord.MessageEmbed().setTimestamp();
 
     // Verify Server is actually tracked
     if (!currentServer) {
@@ -40,7 +40,7 @@ module.exports = {
       msg.delete(5000);
     });
 
-    const filter = m => m.content.toLowerCase() === 'confirm' && m.author.id === message.author.id;
+    const filter = (m) => m.content.toLowerCase() === 'confirm' && m.author.id === message.author.id;
     message.channel.awaitMessages(filter, {
       max: 1,
       maxMatches: 1,
@@ -64,7 +64,6 @@ module.exports = {
           message.channel.send({ embed: errorEmbed });
         });
       }
-    }).catch((err) => {});
+    }).catch(() => {});
   },
 };
-

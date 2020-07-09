@@ -17,8 +17,8 @@ module.exports = {
   name: 'levels',
   description: 'Returns a url to the servers leaderboard',
   async execute(message) {
-    const currentServer = await Servers.find({ where: { server_id: message.guild.id } });
-    const embed = new Discord.RichEmbed().setTimestamp();
+    const currentServer = await Servers.findOne({ where: { server_id: message.guild.id } });
+    const embed = new Discord.MessageEmbed().setTimestamp();
 
     if (!currentServer) {
       embed.setColor(warning)

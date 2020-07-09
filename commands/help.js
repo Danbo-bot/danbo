@@ -12,7 +12,7 @@ module.exports = {
     let toReply = '';
     const { commands } = message.client;
     const sendToDm = (args.indexOf('dm') > -1);
-    const embed = new Discord.RichEmbed().setTimestamp();
+    const embed = new Discord.MessageEmbed().setTimestamp();
 
     // if no arguments, send all commands to DM
     if (!args.length || (args.length === 1 && sendToDm)) {
@@ -32,7 +32,7 @@ module.exports = {
       return message.channel.send({ embed });
     }
     const name = args[0].toLowerCase();
-    const command = commands.get(name) || commands.find(c =>
+    const command = commands.get(name) || commands.findOne(c =>
       c.aliases && c.aliases.includes(name));
 
     // if not a command and don't send to dm then invalid

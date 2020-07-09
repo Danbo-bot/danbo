@@ -6,7 +6,7 @@ module.exports = {
   description: 'Ping...Pong!',
 
   execute(message) {
-    const embed = new Discord.RichEmbed()
+    const embed = new Discord.MessageEmbed()
       .setTimestamp()
       .setColor(black)
       .setTitle('Ping!')

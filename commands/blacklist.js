@@ -9,7 +9,7 @@ module.exports = {
 
   async execute(message, args) {
     if (!message.member.permissions.has('MANAGE_GUILD')) { return; }
-    const embed = new Discord.RichEmbed().setTimestamp();
+    const embed = new Discord.MessageEmbed().setTimestamp();
 
     if (args.length === 0) {
       Blacklisted.findAll({
@@ -35,7 +35,7 @@ module.exports = {
         return;
       }
 
-      const tempRole = message.guild.roles.find('name', args[1]);
+      const tempRole = message.guild.roles.findOne('name', args[1]);
 
       if (!tempRole) {
         embed.setDescription('No Role Found')
@@ -71,7 +71,7 @@ module.exports = {
         return;
       }
 
-      const tempRole = message.guild.roles.find('name', args[1]);
+      const tempRole = message.guild.roles.findOne('name', args[1]);
 
       if (!tempRole) {
         embed.setDescription('No Role Found')
