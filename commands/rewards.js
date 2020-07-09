@@ -24,8 +24,8 @@ module.exports = {
             returnString += `\`${value.role_name} -- ${value.level_gained}\`\n`;
           });
         }
-        embed.setTitle(`Rewards roles for ${message.guild.name}`)
-          .setDescription(returnString).setColor(okay);
+        embed.setTitle(`Rewards roles for ${message.guild.name}`.substring(0, 255))
+          .setDescription(returnString.substring(0, 2048)).setColor(okay);
         message.channel.send({ embed }).catch(console.error);
       }).catch(console.error);
     }
