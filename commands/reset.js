@@ -15,7 +15,7 @@ module.exports = {
 
   async execute(message) {
     // Check User Permissions
-    if (!message.member.permissions.has('MANAGE_GUILD')) { return; }
+    if (!message.member.permissions.has('MANAGE_ROLES')) { return; }
 
     const currentServer = await Servers.findOne({ where: { server_id: message.guild.id } });
     const embed = new Discord.MessageEmbed().setTimestamp();

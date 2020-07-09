@@ -8,7 +8,7 @@ module.exports = {
   usage: '<add/remove> <rolename: str> <levelGained: int>',
 
   async execute(message, args) {
-    if (!message.member.permissions.has('MANAGE_GUILD')) { return; }
+    if (!message.member.permissions.has('MANAGE_ROLES')) { return; }
     const embed = new Discord.MessageEmbed().setTimestamp();
 
     if (args.length === 0) {
