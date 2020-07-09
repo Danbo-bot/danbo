@@ -115,11 +115,11 @@ async function userOnLevel(member, guild) {
   // than their current role. Better for API
   if (allRewards) {
     const theMember = member;
-    const roles = await theMember.roles.cache.values();
+    const roles = Array.from(theMember.roles.cache.values());
     let currentRole = null; // Stores the reward role to apply
     const storedRoles = []; // stores current reward role of user
     for (let j = 0; j < allRewards.length; j += 1) {
-      const tempRole = guild.roles.findOne('id', allRewards[j].role_id);
+      const tempRole = guild.roles.cache.find((role) => role.id === allRewards[j].role_id);
       const index = roles.indexOf(tempRole);
       if (index > -1) {
         storedRoles.push(allRewards[j]);
@@ -136,7 +136,7 @@ async function userOnLevel(member, guild) {
     // If stored roles does not include Current role or if stored roles is greater than 1
     if (!(storedRoles.includes(currentRole) && storedRoles.length === 1)) {
       if (currentRole && roles) {
-        roles.push(guild.roles.findOne('id', currentRole.role_id));
+        roles.push(guild.roles.cache.find((role) => role.id === currentRole.role_id));
         await theMember.setRoles(roles);
       }
     }

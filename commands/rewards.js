@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const { Rewards, Servers } = require('../dbObjects');
 const { alert, warning, okay } = require('../colors.json');
+const { prefix } = require('../config.json');
 
 module.exports = {
   name: 'rewards',
@@ -16,10 +17,13 @@ module.exports = {
         where:
         { server_id: message.guild.id },
       }).then((serverRewards) => {
-        let returnString = '**Name   --    Level**\n';
-        serverRewards.forEach((value) => {
-          returnString += `\`${value.role_name} -- ${value.level_gained}\`\n`;
-        });
+        let returnString = `There are no rewards for this server - add them with \`${prefix}rewards add <role>\``;
+        if (serverRewards.length > 0) {
+          returnString = '**Name   --    Level**\n';
+          serverRewards.forEach((value) => {
+            returnString += `\`${value.role_name} -- ${value.level_gained}\`\n`;
+          });
+        }
         embed.setTitle(`Rewards roles for ${message.guild.name}`)
           .setDescription(returnString).setColor(okay);
         message.channel.send({ embed });
@@ -31,7 +35,7 @@ module.exports = {
         message.channel.send({ embed });
         return;
       }
-      const tempRole = message.guild.roles.findOne('name', args[1]);
+      const tempRole = message.guild.roles.cache.find((role) => role.name === args[1]);
       if (!tempRole) {
         embed.setDescription(`No Role Found for ${args[1]}`).setColor(alert);
         message.channel.send({ embed });
@@ -60,7 +64,7 @@ module.exports = {
         message.channel.send({ embed });
         return;
       }
-      const tempRole = message.guild.roles.findOne('name', args[1]);
+      const tempRole = message.guild.roles.cache.find((role) => role.name === args[1]);
 
       if (!tempRole) {
         embed.setDescription(`No Role Found for ${args[1]}`).setColor(alert);

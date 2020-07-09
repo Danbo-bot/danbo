@@ -35,7 +35,7 @@ module.exports = {
         return;
       }
 
-      const tempRole = message.guild.roles.findOne('name', args[1]);
+      const tempRole = message.guild.roles.cache.find((role) => role.name === args[1]);
 
       if (!tempRole) {
         embed.setDescription('No Role Found')
@@ -71,8 +71,7 @@ module.exports = {
         return;
       }
 
-      const tempRole = message.guild.roles.findOne('name', args[1]);
-
+      const tempRole = message.guild.roles.cache.find((role) => role.name === args[1]);
       if (!tempRole) {
         embed.setDescription('No Role Found')
           .setColor(warning);

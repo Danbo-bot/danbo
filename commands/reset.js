@@ -37,7 +37,7 @@ module.exports = {
         + '**This is a completely irreversable action!**\n\n If you are sure you want to do this type `confirm` now.')
       .setTitle('Confirmation');
     message.channel.send({ embed }).then((msg) => {
-      msg.delete(5000);
+      msg.delete({ timeout: 5000 });
     });
 
     const filter = (m) => m.content.toLowerCase() === 'confirm' && m.author.id === message.author.id;

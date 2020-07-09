@@ -138,7 +138,7 @@ async function createImage(member, user) {
   ctx.clip();
 
   // Add avatar to image
-  const { body: buffer } = await snekfetch.get(member.user.displayAvatarURL);
+  const { body: buffer } = await snekfetch.get(member.user.displayAvatarURL({ format: 'png' }));
   const avatar = await Canvas.loadImage(buffer);
   ctx.drawImage(avatar, 30, 30, 195, 195);
   ctx.restore();
@@ -164,7 +164,7 @@ async function createImage(member, user) {
   ctx.textBaseline = 'middle';
   ctx.fillText(`${expSinceLevel}/${toNextLevel}`, 550, canvas.height - 68);
 
-  const attachment = new Discord.Attachment(canvas.toBuffer(), 'rank-card.png');
+  const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'rank-card.png');
   return attachment;
 }
 
