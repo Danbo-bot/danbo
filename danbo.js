@@ -68,7 +68,6 @@ async function addExperience(user, member, guild, amount) {
     lastMinute.set(user.id, guild.id);
     return true;
   }
-  console.log(user);
   await Users.create({
     id: user.id,
     name: user.username,
@@ -76,7 +75,7 @@ async function addExperience(user, member, guild, amount) {
     avatar_url: user.displayAvatarURL(),
     server_id: guild.id,
     experience: amount,
-  });
+  }).catch(console.error);
   lastMinute.set(user.id, guild.id);
   return true;
 }

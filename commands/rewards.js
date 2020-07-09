@@ -27,7 +27,7 @@ module.exports = {
         embed.setTitle(`Rewards roles for ${message.guild.name}`)
           .setDescription(returnString).setColor(okay);
         message.channel.send({ embed });
-      });
+      }).catch(console.error);
     }
     if (args[0] === 'add') {
       if (args.length < 3) {
@@ -50,14 +50,14 @@ module.exports = {
         const thisServer = Servers.findOrCreate({
           where: { server_id: message.guild.id },
           defaults: { remove_roles: false },
-        });
+        }).catch(console.error);
         newReward.setServer(thisServer);
 
         embed.setTitle('New rewards role created')
           .setDescription(`**Role Name:** ${args[1]}\n**Role ID:** ${newReward.role_id}\n**Unlocked:** ${newReward.level_gained}`)
           .setColor(okay);
         message.channel.send({ embed });
-      });
+      }).catch(console.error);
     } else if (args[0] === 'rem' || args[0] === 'remove') {
       if (args.length < 2) {
         embed.setDescription('Not enough arguments').setColor(alert);
@@ -93,8 +93,8 @@ module.exports = {
           embed.setTitle(`Successfully deleted the reward role ${args[1]}`)
             .setDescription(returnString).setColor(okay);
           message.channel.send({ embed });
-        });
-      });
+        }).catch(console.error);
+      }).catch(console.error);
     }
   },
 };
