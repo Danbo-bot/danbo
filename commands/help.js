@@ -25,7 +25,10 @@ module.exports = {
           .then(() => {
             embed.fields = null;
             embed.setTitle('Success').setDescription('I\'ve sent you a DM!');
-            message.reply({ embed });
+            message.reply({ embed }).then((response) => {
+              response.delete({ timeout: 5000 });
+              message.delete({ timeout: 5000 });
+            });
           })
           .catch();
       }
