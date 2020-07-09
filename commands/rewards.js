@@ -26,7 +26,7 @@ module.exports = {
         }
         embed.setTitle(`Rewards roles for ${message.guild.name}`)
           .setDescription(returnString).setColor(okay);
-        message.channel.send({ embed });
+        message.channel.send({ embed }).catch(console.error);
       }).catch(console.error);
     }
     if (args[0] === 'add') {
