@@ -8,4 +8,3 @@ module.exports = (sequelize, DataTypes) => sequelize.define('blacklist', {
 }, {
   timestamps: false,
 });
-
