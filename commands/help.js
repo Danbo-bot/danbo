@@ -1,5 +1,5 @@
-const { prefix } = require('../config.json');
 const Discord = require('discord.js');
+const { prefix } = require('../config.json');
 const { alert, okay } = require('../colors.json');
 
 module.exports = {
@@ -18,22 +18,22 @@ module.exports = {
     if (!args.length || (args.length === 1 && sendToDm)) {
       embed.setTitle('**Commands**')
         .setColor(okay)
-        .setDescription(commands.map(command => command.name).join(', '));
+        .setDescription(commands.map((command) => command.name).join(', '));
 
       if (sendToDm) {
         return message.author.send({ embed })
-          .then(sent => {
+          .then(() => {
             embed.fields = null;
-            embed.setTitle('Success').setDescription(`I've sent you a DM!`);
+            embed.setTitle('Success').setDescription('I\'ve sent you a DM!');
             message.reply({ embed });
-            })
+          })
           .catch();
       }
       return message.channel.send({ embed });
     }
     const name = args[0].toLowerCase();
-    const command = commands.get(name) || commands.findOne(c =>
-      c.aliases && c.aliases.includes(name));
+    const command = commands.get(name)
+      || commands.findOne((c) => c.aliases && c.aliases.includes(name));
 
     // if not a command and don't send to dm then invalid
     if (!command && !sendToDm) {
@@ -53,11 +53,11 @@ module.exports = {
     // if command found and send to dm, sends user a dm
     if (sendToDm) {
       return message.author.send({ embed })
-        .then(sent => {
+        .then(() => {
           embed.fields = null;
-          embed.setTitle('Success').setDescription(`I've sent you a DM!`);
+          embed.setTitle('Success').setDescription('I\'ve sent you a DM!');
           message.reply({ embed });
-          })
+        })
         .catch();
     // else command is found send it to channel
     }

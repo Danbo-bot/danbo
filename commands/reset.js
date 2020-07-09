@@ -33,8 +33,8 @@ module.exports = {
 
     // Double Check they meant to type command
     embed.setColor(warning)
-      .setDescription('You are about to completely reset **ALL** user levels for this server.\n' +
-        '**This is a completely irreversable action!**\n\n If you are sure you want to do this type `confirm` now.')
+      .setDescription('You are about to completely reset **ALL** user levels for this server.\n'
+        + '**This is a completely irreversable action!**\n\n If you are sure you want to do this type `confirm` now.')
       .setTitle('Confirmation');
     message.channel.send({ embed }).then((msg) => {
       msg.delete(5000);

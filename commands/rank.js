@@ -1,9 +1,9 @@
-const { sequelize } = require('../dbObjects');
 const Discord = require('discord.js');
 const Canvas = require('canvas');
 const { registerFont } = require('canvas');
 const snekfetch = require('snekfetch');
-const { okay, alert } = require('../colors.json');
+const { sequelize } = require('../dbObjects');
+const { alert } = require('../colors.json');
 
 function roundedImage(ctx, x, y, width, height, radius) {
   ctx.beginPath();
@@ -46,7 +46,7 @@ const applyText = (canvas, text) => {
 // get all members
 function allMembers(message) {
   const toReturn = [];
-  message.guild.members.filter(mem => toReturn.push(mem));
+  message.guild.members.filter((mem) => toReturn.push(mem));
   return toReturn;
 }
 
@@ -74,7 +74,7 @@ async function rankFallback(member, user) {
   message += `\nRank: #${user.rank}`;
   message += `\nLevel: #${user.level}`;
   message += `\nTotal EXP: ${user.experience}`;
-  message += `\nEXP This Level: ${expSinceLastLevel(user.experience, user.level)}/${expToNextLevel(user.experience, user.level)}`
+  message += `\nEXP This Level: ${expSinceLastLevel(user.experience, user.level)}/${expToNextLevel(user.experience, user.level)}`;
 
   return `\`\`\`\n${message}\n\`\`\``;
 }

@@ -1,5 +1,5 @@
-const { black } = require('../colors.json');
 const Discord = require('discord.js');
+const { black } = require('../colors.json');
 
 module.exports = {
   name: 'ping',

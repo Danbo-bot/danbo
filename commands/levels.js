@@ -1,6 +1,6 @@
+const Discord = require('discord.js');
 const { Servers } = require('../dbObjects');
 const { warning, okay } = require('../colors.json');
-const Discord = require('discord.js');
 
 function StringReplace(inString, serverName, url) {
   let retString = inString;
@@ -18,7 +18,7 @@ module.exports = {
   description: 'Returns a url to the servers leaderboard',
   async execute(message) {
     const currentServer = await Servers.findOne({ where: { server_id: message.guild.id } });
-    const embed = new Discord.MessageEmbed().setTimestamp();
+    const embed = new Discord.RichEmbed().setTimestamp();
 
     if (!currentServer) {
       embed.setColor(warning)
@@ -34,4 +34,3 @@ module.exports = {
     message.channel.send({ embed });
   },
 };
-

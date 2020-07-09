@@ -1,6 +1,6 @@
+const Discord = require('discord.js');
 const { Rewards, Servers } = require('../dbObjects');
 const { alert, warning, okay } = require('../colors.json');
-const Discord = require('discord.js');
 
 module.exports = {
   name: 'rewards',
