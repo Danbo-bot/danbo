@@ -30,7 +30,7 @@ async function addExperience(user, member, guild, amount) {
     if (lastMinute.has(user.id)) return false;
   }
   const allBlacklisted = await Blacklisted.findAll({ where: { server_id: guild.id } });
-  const memberRoles = member.roles.cache.values();
+  const memberRoles = Array.from(member.roles.cache.values());
   const allRoles = allBlacklisted.map((role) => role.role_id);
   let hasRole = false;
   for (let i = 0; i < memberRoles.length && !hasRole; i += 1) {
