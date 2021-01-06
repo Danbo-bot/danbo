@@ -4,7 +4,7 @@
   "description": "Discord bot, meant to be a simpler mee6",
   "main": "slowmode.js",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "canvas": "^2.6.1",
     "discord.js": "^12.2.0",
     "pg": "^7.12.1",
